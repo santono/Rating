@@ -1,0 +1,111 @@
+<!--
+body {
+    margin:0px;
+    padding:0px;
+    height:100%;
+    overflow:auto;
+}
+-->
+.page {
+    min-height:100%;
+    position:relative;
+}
+
+.header {
+    padding-top:1px;
+    padding-bottom:10px;
+    width:100%;
+    text-align:center;
+}
+
+.menu {
+    padding:0px;
+    width:100%;
+}
+
+.body {
+    margin:0px 0px 0px 0px;
+    width:100%;
+}
+
+.footer {
+    padding:10px;
+    width:100%;
+    text-align:center;
+}
+.hftbl {
+    border-style:solid;
+    border-width:1px;
+    padding:2px;
+    font-family: Verdana;
+    font-size: 10pt;
+
+}
+.visibletbl
+{
+    border-style:solid;
+    border-width:1px;
+    border-collapse:collapse;
+    padding:2px;
+    font-family: Verdana;
+    font-size: 10pt;
+}
+.vth, .vtd
+{
+    border-style:solid;
+    border-width:1px;
+    border-collapse:collapse;
+    border-color:black;
+    padding:2px;
+    font-family: Verdana;
+    font-size: 10pt;
+}
+.vth
+{
+    height:28px;
+    background-color:#f892dc;
+    color:white;
+}
+.hth, .htd
+{
+    padding:2px;
+    font-family: Verdana;
+    font-size: 10pt
+}
+.hth
+{
+    height:28px;
+    background-color:#f892dc;
+    color:white;
+}
+.ctb, .cth, .ctd
+{
+    border-style:solid;
+    border-width:1px;
+    border-collapse:collapse;
+    padding:2px;
+    font-family: Verdana;
+    font-size: 12pt;
+}
+.cth
+{
+    height:28px;
+    background-color:#f892dc;
+    color:white;
+    border-color:black;
+}
+.ts1
+{
+    background-color:#ffeffb;
+}
+.error {
+    color: #ff0000;
+}
+
+.errorblock {
+    color: #000;
+    background-color: #ffEEEE;
+    border: 3px solid #ff0000;
+    padding: 8px;
+    margin: 16px;
+}

@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:p="http://www.springframework.org/schema/p"
+        xmlns:context="http://www.springframework.org/schema/context"
+        xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd">
+
+			
+
+ <!--
+    <context:property-placeholder properties-ref="kadProperties" />
+-->
+	<!-- Activates various annotations to be detected in bean classes -->
+	<context:annotation-config />
+	
+	<!-- Scans the classpath for annotated components that will be auto-registered as Spring beans.
+	 For example @Controller and @Service. Make sure to set the correct base-package-->
+	<context:component-scan base-package="rating" />
+	
+	<!-- Configures the annotation-driven Spring MVC Controller programming model.
+	Note that, with Spring 3.0, this tag works in Servlet MVC only!  -->
+<!--
+    <import resource="jasper-views.xml" />
+-->	
+    <bean id="ratingProperties" class="org.springframework.beans.factory.config.PropertiesFactoryBean"
+          p:location="classpath:spring/spring.properties" />
+    <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="locations">
+            <value>classpath:spring/spring.properties</value>
+        </property>
+    </bean>
+
+    <import resource="jdbc-context.xml" />
+    <import resource="tiles-context.xml" />
+    <import resource="spring-security.xml" />
+    <import resource="jasper-views.xml" />
+
+
+    <bean id="restTemplate" class="org.springframework.web.client.RestTemplate">
+    </bean>
+
+<!--
+    <bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
+        <property name="host" value="smtp.gmail.com" />
+        <property name="port" value="587" />
+        <property name="username" value="gsantono@gmail.com" />
+        <property name="password" value="xfkflblb" />
+
+        <property name="javaMailProperties">
+            <props>
+                <prop key="mail.transport.protocol">smtp</prop>
+                <prop key="mail.smtp.auth">true</prop>
+                <prop key="mail.smtp.starttls.enable">true</prop>
+            </props>
+        </property>
+    </bean>
+-->
+    <bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
+        <property name="host" value="${mail.host}" />
+        <property name="port" value="${mail.port}" />
+        <property name="username" value="${mail.username}" />
+        <property name="password" value="${mail.password}" />
+
+        <property name="javaMailProperties">
+            <props>
+                <prop key="mail.transport.protocol">${mail.protocol}</prop>
+                <prop key="mail.smtps.auth">${mail.smtps.auth}</prop>
+                <prop key="mail.smtp.starttls.enable">true</prop>
+            </props>
+        </property>
+    </bean>
+    <!--
+        <bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
+            <property name="host" value="smtp.yandex.ru" />
+            <property name="port" value="465" />
+            <property name="username" value="kfu.2018@yandex.ru" />
+            <property name="password" value="ar1737" />
+
+            <property name="javaMailProperties">
+                <props>
+                    <prop key="mail.transport.protocol">smtp</prop>
+                    <prop key="mail.smtp.auth">true</prop>
+                    <prop key="mail.smtp.starttls.enable">true</prop>
+                </props>
+            </property>
+        </bean>
+-->
+    <!--
+        <bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
+            <property name="host" value="smtp.mail.ru" />
+            <property name="port" value="465" />
+            <property name="username" value="uhb0f84h@mail.ru" />
+            <property name="password" value="dhg9j49h0gnj904h" />
+            <property name="from" value="uhb0f84h@mail.ru" />
+
+            <property name="javaMailProperties">
+                <props>
+                    <prop key="mail.transport.protocol">smtps</prop>
+                    <prop key="mail.smtp.auth">true</prop>
+                    <prop key="mail.smtp.starttls.enable">true</prop>
+                </props>
+            </property>
+        </bean>
+-->
+
+        <bean class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
+            <property name="exceptionMappings">
+                <props>
+                    <prop key="java.lang.Exception">Error</prop>
+                </props>
+            </property>
+        </bean>
+    <!-- Шаблон письма -->
+    <bean id="templateMessage" class="org.springframework.mail.SimpleMailMessage">
+        <property name="from" value="${mail.from}" />
+        <property name="subject" value="Код для регистрации в системе учета научных работ" />
+    </bean>
+
+    </beans>

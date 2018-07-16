@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p" 
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xsi:schemaLocation="http://www.springframework.org/schema/mvc
+                        http://www.springframework.org/schema/mvc/spring-mvc.xsd
+	                    http://www.springframework.org/schema/beans 
+	   		            http://www.springframework.org/schema/beans/spring-beans.xsd
+                        http://www.springframework.org/schema/context
+                        http://www.springframework.org/schema/context/spring-context.xsd">
+			
+			
+	
+	<!-- Declare a view resolver -->
+    <!--
+    <bean class="org.springframework.web.servlet.view.XmlViewResolver">
+        <property name="location">
+            <value>/WEB-INF/spring-excel-views.xml</value>
+        </property>
+        <property name="order" value="0" />
+    </bean>
+    -->
+<!--	
+    <bean class="org.springframework.web.servlet.view.XmlViewResolver"
+          p:location="/WEB-INF/jasper-views.xml"
+          p:order="0"
+    />
+-->	
+     <context:component-scan
+            base-package="rating.controller"/>
+
+     <context:annotation-config />
+    <!--
+         <mvc:annotation-driven conversion-service="conversionService"/>
+    -->
+<mvc:annotation-driven />
+<mvc:default-servlet-handler />
+<mvc:resources mapping="/resources/**" location="/resources/" />
+<bean class="org.springframework.web.servlet.view.XmlViewResolver"
+    p:location="/WEB-INF/jasper-views.xml"
+    p:order="0"
+/>
+
+<bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver"
+      p:prefix="/WEB-INF/jsp/" p:suffix=".jsp" p:order="1"/>
+
+<!--    class="org.springframework.web.multipart.support.StandardServletMultipartResolver" > -->
+<!--
+   <bean id="multipartResolver"
+       class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+        <property name="maxUploadSize" value="25000000" />
+    </bean>
+-->
+    <bean	id="multipartResolver"
+             class="org.springframework.web.multipart.support.StandardServletMultipartResolver">
+    </bean>
+
+<!--
+    <mvc:view-resolvers>
+		<mvc:content-negotiation use-not-acceptable="true">
+	    	<mvc:default-views>	    		
+	      		<bean class="org.springframework.web.servlet.view.JstlView">
+	      			<property name="url" value="" />
+	      		</bean>
+	    	</mvc:default-views>
+	  	</mvc:content-negotiation>
+-->
+	  	<!-- Registering BeanNameViewResolver and InternalViewResolver -->
+<!--
+	  	<mvc:jsp prefix="/WEB-INF/jsp/" suffix=".jsp"/>
+        <mvc:tiles view-class="org.springframework.web.servlet.view.tiles2.TilesView" />
+        <mvc:bean-name />
+	</mvc:view-resolvers>
+-->
+
+ <!--
+    <bean id="multipartResolver"
+          class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+ -->
+        <!-- max file size in bytes -->
+<!--        <property name="maxUploadSize" value="2000000" />  -->
+        <!-- other properties... -->
+ <!--
+    </bean>
+  -->
+
+
+</beans>

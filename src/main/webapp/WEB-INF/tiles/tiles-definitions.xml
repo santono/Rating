@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE tiles-definitions PUBLIC
+        "-//Apache Software Foundation//DTD Tiles Configuration 3.0//EN"
+        "http://tiles.apache.org/dtds/tiles-config_3_0.dtd">
+
+<tiles-definitions>
+
+
+    <!--  We declare a new template named template-main.
+       This template is used for displaying the main page.
+       It has 4 attributes. These attributes are placeholder
+       for our contents  For each attribute, we have assigned
+       a corresponding JSP -->
+    <definition name="templateDefault" template="/WEB-INF/templates/default/template.jsp">
+        <put-attribute name="title" value="КФУ. Информационная система."/>
+        <put-attribute name="header" value="/WEB-INF/templates/default/header.jsp"/>
+        <put-attribute name="menu" value="/WEB-INF/templates/default/menu.jsp"/>
+        <put-attribute name="body" value="/WEB-INF/templates/default/body.jsp"/>
+        <put-attribute name="footer" value="/WEB-INF/templates/default/footer.jsp"/>
+    </definition>
+
+    <!-- Concrete page. To use this page, your controller must return
+       the name "pet-tiles" -->
+
+
+    <definition name="t1" extends="templateDefault">
+        <put-attribute name="menu" value="/WEB-INF/templates/mainpage/menu.jsp"/>
+        <put-attribute name="body" value="/WEB-INF/templates/mainpage/body.jsp"/>
+        <!--    <put-attribute name="body" value="/WEB-INF/templates/mainpage/body.jsp" />  -->
+    </definition>
+    <definition name="browseAllRoads" extends="templateDefault">
+        <put-attribute name="menu" value="/WEB-INF/templates/browseallroads/menu.jsp"/>
+        <put-attribute name="body" value="/WEB-INF/templates/browseallroads/body.jsp"/>
+    </definition>
+    <definition name="browseRPTable" extends="templateDefault">
+        <put-attribute name="menu" value="/WEB-INF/templates/browsetable/menu.jsp"/>
+        <put-attribute name="body" value="/WEB-INF/templates/browsetable/body.jsp"/>
+    </definition>
+    <definition name="browseRDTable" extends="templateDefault">
+        <put-attribute name="menu" value="/WEB-INF/templates/browserdtable/menu.jsp"/>
+        <put-attribute name="body" value="/WEB-INF/templates/browserdtable/body.jsp"/>
+    </definition>
+    <definition name="browseAllPodr" extends="templateDefault">
+        <put-attribute name="menu" value="/WEB-INF/templates/browsekaf/menu.jsp"/>
+        <put-attribute name="body" value="/WEB-INF/templates/browsekaf/body.jsp"/>
+    </definition>
+    <definition name="browseAllUsers" extends="templateDefault">
+        <put-attribute name="menu" value="/WEB-INF/templates/browseallusers/menu.jsp"/>
+        <put-attribute name="body" value="/WEB-INF/templates/browseallusers/body.jsp"/>
+    </definition>
+    <definition name="yamaproads" extends="templateDefault">
+        <put-attribute name="header" value="/WEB-INF/templates/yamaproads/empty.jsp"/>
+        <put-attribute name="menu" value="/WEB-INF/templates/yamaproads/empty.jsp"/>
+        <put-attribute name="body" value="/WEB-INF/templates/yamaproads/body.jsp"/>
+        <put-attribute name="footer" value="/WEB-INF/templates/yamaproads/empty.jsp"/>
+    </definition>
+    <definition name="browsePodrs" extends="templateDefault">
+        <put-attribute name="menu" value="/WEB-INF/templates/browsepodr/menu.jsp"/>
+        <put-attribute name="body" value="/WEB-INF/templates/browsepodr/body.jsp"/>
+    </definition>
+    <definition name="browseWidDamage" extends="templateDefault">
+        <put-attribute name="menu" value="/WEB-INF/templates/browsewiddamage/menu.jsp"/>
+        <put-attribute name="body" value="/WEB-INF/templates/browsewiddamage/body.jsp"/>
+    </definition>
+    <definition name="browseWidDamage" extends="templateDefault">
+        <put-attribute name="menu" value="/WEB-INF/templates/browsewiddamage/menu.jsp"/>
+        <put-attribute name="body" value="/WEB-INF/templates/browsewidcover/body.jsp"/>
+    </definition>
+    <definition name="browseWidCover" extends="templateDefault">
+        <put-attribute name="menu" value="/WEB-INF/templates/browsewidblob/menu.jsp"/>
+        <put-attribute name="body" value="/WEB-INF/templates/browsewidcover/body.jsp"/>
+    </definition>
+    <definition name="browseRDocTable" extends="templateDefault">
+        <put-attribute name="menu"   value="/WEB-INF/templates/browserdoctable/menu.jsp"/>
+        <put-attribute name="body"   value="/WEB-INF/templates/browserdoctable/body.jsp"/>
+        <put-attribute name="footer" value="/WEB-INF/templates/browserdoctable/footer.jsp"/>
+    </definition>
+
+
+</tiles-definitions>

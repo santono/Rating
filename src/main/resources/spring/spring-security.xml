@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/security"
+      xmlns:beans= "http://www.springframework.org/schema/beans"
+      xmlns:xsi  = "http://www.w3.org/2001/XMLSchema-instance"
+      xmlns:p="http://www.springframework.org/schema/p"
+      xsi:schemaLocation="http://www.springframework.org/schema/beans
+                          http://www.springframework.org/schema/beans/spring-beans.xsd
+                          http://www.springframework.org/schema/security
+                          http://www.springframework.org/schema/security/spring-security.xsd">
+
+
+
+
+
+    <http   use-expressions="false" pattern="/resources" security="none" />
+
+    <http  use-expressions="false" pattern="/" security="none" />
+<!--
+    <http pattern="/j_spring_security_check" security="none" />
+-->
+
+    <http auto-config="true"  use-expressions="true" disable-url-rewriting="false" >
+        <headers disabled="true"/>
+        <csrf disabled="true"/>
+   <!--
+        <anonymous />
+        <intercept-url pattern="/**" access="ROLE_USER" />
+        <http-basic />
+        <logout delete-cookies="JSESSIONID" />
+        <session-management session-authentication-error-url="/sessionerror.jsp">
+            <concurrency-control max-sessions="500" error-if-maximum-exceeded="true" />
+        </session-management>
+   -->
+
+<!--
+        <intercept-url pattern="/**" access="isFullyAuthenticated()"/>
+-->
+
+        <intercept-url pattern="/j_spring_security_check" access="permitAll"/>
+<!--
+        <intercept-url pattern="j_spring_security_check" access="permitAll"/>
+-->
+        <intercept-url pattern="/access/signin.jsp" access="IS_AUTHENTICATED_ANONYMOUSLY"/>
+        <intercept-url pattern="/access/loginui.jsp" access="IS_AUTHENTICATED_ANONYMOUSLY"/>
+        <intercept-url pattern="/signin/failure" access="IS_AUTHENTICATED_ANONYMOUSLY"/>
+        <intercept-url pattern="/loginui" access="permitAll"/>
+        <intercept-url pattern="/login" access="permitAll"/>
+        <intercept-url pattern="/signin" access="permitAll"/>
+        <intercept-url pattern="/signin/failure" access="permitAll"/>
+        <intercept-url pattern="/logout" access="permitAll"/>
+        <intercept-url pattern="/denied" access="permitAll"/>
+        <intercept-url pattern="/denied" access="hasAnyRole('ROLE_USER', 'ROLE_ADMIN')"/>
+
+        <intercept-url pattern="/mainpage" access="hasAnyRole('ROLE_USER', 'ROLE_ADMIN','USER','ADMIN')"/>
+
+        <intercept-url pattern="/download" access="isFullyAuthenticated()" />
+<!--
+        <intercept-url pattern="/mainpage" access="isFullyAuthenticated()" />
+-->
+        <!--
+                <intercept-url pattern="/mainpage" access="permitAll"/>
+        -->
+        <intercept-url pattern="/users" access="hasAnyRole('ADMIN')" />
+        <intercept-url pattern="/roads" access="hasAnyRole('ROLE_ADMIN','ADMIN','ROLE_USER','USER')" />
+        <intercept-url pattern="/roadmap" access="hasAnyRole('ROLE_ADMIN','ADMIN','ROLE_USER','USER')" />
+        <intercept-url pattern="/rp" access="hasAnyRole('ROLE_ADMIN','ADMIN','ROLE_USER','USER')" />
+        <intercept-url pattern="/widdamage" access="hasAnyRole('ROLE_ADMIN','ADMIN','ROLE_USER','USER')" />
+
+        <form-login login-page="/signin"
+                    authentication-failure-url="/signin/failure"
+                    default-target-url="/"
+                    username-parameter="j_username"
+                    password-parameter="j_password"
+                    login-processing-url="/j_spring_security_check"
+                />
+        <!--
+        username-parameter="j_username"
+        password-parameter="j_password"
+        login-processing-url="/j_spring_security_check"
+        authentication-failure-url="/login?login_error=1"
+        -->
+
+        <access-denied-handler error-page="/denied"/>
+        <logout invalidate-session="true"
+                logout-success-url="/logout/success"
+                logout-url="/logout" />
+        <!--
+
+                        logout-url="/j_spring_security_logout"  />
+        -->
+
+
+        <custom-filter ref="captchaCaptureFilter" before="FORM_LOGIN_FILTER"/>
+        <custom-filter ref="captchaVerifierFilter" after="FORM_LOGIN_FILTER"/>
+
+    </http>
+<!--
+    <authentication-manager>
+        <authentication-provider>
+            <user-service>
+                <user name="dvv" password="ar1737" authorities="ROLE_USER, ROLE_ADMIN" />
+                <user name="sss" password="1" authorities="ROLE_ADMIN, ROLE_USER" />
+                <user name="1"   password="1" authorities="ROLE_ADMIN, ROLE_USER, ADMIN,USER" />
+            </user-service>
+        </authentication-provider>
+    </authentication-manager>
+
+-->
+
+    <!-- For capturing CAPTCHA fields -->
+    <beans:bean id="captchaCaptureFilter" class="rating.filters.CaptchaCaptureFilter" />
+
+    <!-- For verifying CAPTCHA fields -->
+    <!-- Private key is assigned by the reCATPCHA service -->
+    <beans:bean id="captchaVerifierFilter" class="rating.filters.CaptchaVerifierFilter"
+          p:useProxy="false"
+          p:proxyPort=""
+          p:proxyHost=""
+          p:failureUrl="/signin/failure"
+          p:captchaCaptureFilter-ref="captchaCaptureFilter"
+          p:privateKey="${google.recaptcha.private.key}" />
+    <!--      p:privateKey="6LdKxA4TAAAAAM2D7p6SlcnaDFl7NeS-_AUfZUlQ" />  -->
+    <!--   p:privateKey="ADD-YOUR-PRIVATE-KEY-HERE" /> -->
+    <beans:bean id="customUserDetailsService" class="rating.service.CustomUserDetailsService"
+     />
+
+    <authentication-manager>
+        <authentication-provider user-service-ref="customUserDetailsService">
+
+<!--            <password-encoder hash="md5"/> -->
+            </authentication-provider>
+        </authentication-manager>
+
+</beans:beans>
+
