@@ -1,8 +1,4 @@
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-<%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <%@ page contentType="text/html;charset=UTF-8" pageEncoding="UTF-8" language="java" %>
-<%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <template id="template-user-form">
     <div class="ui first coupled modal" v-show="show" id="modaluser">
         <i class="close icon"></i>
@@ -91,6 +87,9 @@
                         <div class="field">
                             <label>Список публикаций автора (elibrary.ru): *</label>
                             <input v-model="editingrec.hrefElibraryRu" type="text" placeholder="Укажите интернет-ссылку на страницу" path="hrefElibraryRu" maxlength="64"/>
+                            <div v-if="correctRINCHREF">
+                                <a v-bind:href="''+editingrec.hrefElibraryRu+''" target="_blank">Перейти</a>
+                            </div>
                         </div>
 
                     </div>
@@ -1009,6 +1008,14 @@
                     retVal=true;
                 }
                 return retVal;
+            },
+            correctRINCHREF:function() {
+                var tmpl="https://elibrary.ru/author_items.asp?authorid=";
+                if (!this.editingrec) return false;
+                if (!this.editingrec.hrefElibraryRu) return false;
+                var i=this.editingrec.hrefElibraryRu.indexOf(tmpl);
+                if (i<0) return false;
+                return true;
             }
         },
         watch: {

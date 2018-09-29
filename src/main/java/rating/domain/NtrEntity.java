@@ -21,6 +21,8 @@ public class NtrEntity  implements Serializable {
     private String fiowrk; 
     private Calendar datewrk;
     private String parametry;
+    private int idRinc;
+    private String hrefRinc;
 
     public int getId() {
         return id;
@@ -132,6 +134,22 @@ public class NtrEntity  implements Serializable {
 
     public void setParametry(String parametry) {
         this.parametry = parametry;
+    }
+
+    public int getIdRinc() {
+        return idRinc;
+    }
+
+    public void setIdRinc(int idRinc) {
+        this.idRinc = idRinc;
+    }
+
+    public String getHrefRinc() {
+        return hrefRinc;
+    }
+
+    public void setHrefRinc(String hrefRinc) {
+        this.hrefRinc = hrefRinc;
     }
 
     @Override

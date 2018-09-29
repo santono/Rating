@@ -115,6 +115,9 @@
                 retVal=true;
 //                if (item && item.amnt)
                 return retVal;
+            },
+            show:function() {
+
             }
 
         },

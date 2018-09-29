@@ -2,6 +2,7 @@ package rating.dao;
 
 
 import rating.domain.NtrEntity;
+import rating.dto.NtrRecDTO;
 import rating.dto.SemanticUISearchDTO;
 import rating.dto.SemanticUISearchItemDTO;
 
@@ -15,6 +16,10 @@ public interface NtrDAO {
     public List<NtrEntity> getAll();
 
     public List<NtrEntity> getAllForPre(int shifrpre);
+
+    public List<NtrEntity> getPageForPre(int shifrpre,int pageNo,int pageSize,int order);
+
+    public List<NtrRecDTO> getPageForPreFromFn(int kind,int shifrpre,int yfr, int yto, int pageNo, int pageSize, int order,int shifridnprforfilter);
 
     public List<NtrEntity> getAllForNPR(int shifrnpr);
 
@@ -30,4 +35,6 @@ public interface NtrDAO {
 
     public List<SemanticUISearchItemDTO> getSourceForSemanticUISearch(String wantedName);
 
+//    public int getCountNtr(int shifrpre,int mode);
+    public int getCountNtr(int kind,int shifrpre,int yfr,int yto,int shifridnprforfilter);
 }

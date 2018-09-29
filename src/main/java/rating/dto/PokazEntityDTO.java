@@ -8,8 +8,6 @@ public class PokazEntityDTO {
     private double amnt;
     private double amntn;
 
-
-
     public String getName() {
         return name;
     }
@@ -17,7 +15,6 @@ public class PokazEntityDTO {
     public void setName(String name) {
         this.name = name;
     }
-
 
     public double getAmnt() {
         return amnt;
@@ -63,6 +60,4 @@ public class PokazEntityDTO {
         result = 31*result + (name != null ? name.hashCode() : 0);
         return (int )result;
     }
-
-
 }

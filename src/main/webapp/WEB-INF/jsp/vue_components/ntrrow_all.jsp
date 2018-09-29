@@ -1,12 +1,11 @@
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-<%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <%@ page contentType="text/html;charset=UTF-8" pageEncoding="UTF-8" language="java" %>
-<%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <template id="template-ntr-row">
     <tr>
         <td>
+<%--
             {{rowrec.id}}
+--%>
+            {{rowrec.lineno}}
         </td>
         <td>
             <span>{{rowrec.authors}}</span>
@@ -60,11 +59,6 @@ var ntrrow=Vue.extend({
 
     methods: {
         approventr:function() {
-<%--
-            <c:url value="/util/ntr/approve" var="uri2" />
-            var uri3="${uri2}"+"/"+this.rowrec.id;
-            var uri=uri3;
---%>
             var uri=this.$root.rootPath+"/util/ntr/approve/"+this.rowrec.id;
             var vm=this;
 //            console.log("inside approve ntr approve uri="+uri);
@@ -110,11 +104,6 @@ var ntrrow=Vue.extend({
 
         },
         dismissapproventr:function() {
-<%--
-            <c:url value="/util/ntr/dismissapprove" var="uri2" />
-            var uri3="${uri2}"+"/"+this.rowrec.id;
-            var uri=uri3;
---%>
             var uri = this.$root.rootPath+"/util/ntr/dismissapprove/"+this.rowrec.id;
             var vm=this;
 //            console.log("inside get imagehreas uri="+uri);

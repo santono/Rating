@@ -64,6 +64,8 @@ public class NtrService {
                 ntrEntity.setDatepubl(ntrRecFromJSONDTO.getDatePublJava());
             if (ntrRecFromJSONDTO.getShifrPre()<1)
                 ntrEntity.setShifrpre(shifrPre);
+            ntrEntity.setIdRinc(ntrRecFromJSONDTO.getIdRinc());
+            ntrEntity.setHrefRinc(ntrRecFromJSONDTO.getHrefRinc());
             saveRecord(ntrEntity);
             retVal=ntrEntity.getId();
         } else {
@@ -82,6 +84,8 @@ public class NtrService {
                 (ntrEntity.getShifrpre()<=0)
                )
                ntrEntity.setShifrpre(shifrPre);
+            ntrEntity.setIdRinc(ntrRecFromJSONDTO.getIdRinc());
+            ntrEntity.setHrefRinc(ntrRecFromJSONDTO.getHrefRinc());
             saveRecord(ntrEntity);
             retVal=ntrEntity.getId();
         }
@@ -104,92 +108,33 @@ public class NtrService {
         List<NtrEntity> ntrList=ntrDAO.getAllForPre(shifrpre);
         List<NtrRecDTO> lrec=makeNtrListDTO(ntrList,0);
 
-//        List<NtrRecDTO> lrec=new ArrayList<NtrRecDTO>();
-//        for (NtrEntity ntrEntity:ntrList){
-//            NtrRecDTO ntrRecDTO=new NtrRecDTO();
-//            ntrRecDTO.setId(ntrEntity.getId());
-//            String s="";
-//            if (ntrEntity.getDatepubl()!=null)
-//                if (ntrEntity.getDatepubl().get(Calendar.YEAR)>1950) {
-//                    SimpleDateFormat sdf=new SimpleDateFormat("dd-M-YYYY");
-//                    try {
-//                       s=sdf.format(ntrEntity.getDatepubl().getTime());
-//                    } catch (IllegalArgumentException e)  {
-//                        s="";
-//                    }
-//                }
-//            ntrRecDTO.setDataapproved(s);
-//            if (ntrEntity.getStatus()==1) {
-//               ntrRecDTO.setApproved("Подтверждено");
-//            } else {
-//               ntrRecDTO.setApproved("");
-//            }
-//            ntrRecDTO.setName(ntrEntity.getName());
-//            ntrRecDTO.setHasattachement(getHasAttachement(ntrEntity.getId()));
-//            ntrRecDTO.setAuthors(getAuthors(ntrEntity.getId()));
-//            ntrRecDTO.setParametry(ntrEntity.getParametry());
-//            ntrRecDTO.setAmntOfImages(getAmntOfImagesForNtr(ntrEntity.getId()));
-//            ntrRecDTO.setAmntOfDocs(getAmntOfDocsForNtr(ntrEntity.getId()));
-//
-//            ntrRecDTO.setPokaz(ntrPokazService.getPokazForNtr(ntrEntity.getId()));
-//            s="";
-//            if (ntrEntity.getShifrpre()>0)  {
-//                s = podrService.getById(ntrEntity.getShifrpre()).getShortName();
-//                if ((s==null) || (s.trim().length()<1))
-//                   s = podrService.getById(ntrEntity.getShifrpre()).getName();
-//            }
-//            ntrRecDTO.setNamepre(s);
-//            s="";
-//            s=ntrPokazService.getPokazForNtr(ntrEntity.getId());
-//            lrec.add(ntrRecDTO);
-//        }
         return lrec;
     }
 
+    public List<NtrRecDTO> getPageNtrListForPre(int kind,int shifrpre,int yfrom,int yto,int pageNo,int pageSize,int order,int shifridnprforfilter) {
+//        List<NtrEntity> ntrList;
+//        if (pageNo<1) {
+//            ntrList = ntrDAO.getAllForPre(shifrpre);
+//        } else {
+//            ntrList = ntrDAO.getPageForPre(shifrpre,pageNo,pageSize,order);
+//        }
+//        List<NtrRecDTO> lrec=makeNtrListDTO(ntrList,0);
+        List<NtrRecDTO> lrec=ntrDAO.getPageForPreFromFn(kind,shifrpre,yfrom,yto,pageNo,pageSize,order,shifridnprforfilter);
+
+        return lrec;
+    }
+    public int getCountNtr(int kind,int shifrpre,int yfr,int yto,int shifridnprforfilter) {
+        // mode=0 - predp mode=1 user
+        int retVal;
+        retVal=ntrDAO.getCountNtr(kind,shifrpre,yfr,yto,shifridnprforfilter);
+        return retVal;
+    }
+    
     public List<NtrRecDTO> getNtrListForNPR(int shifrnpr) {
         List<NtrEntity> ntrList=ntrDAO.getAllForNPR(shifrnpr);
-        List<NtrRecDTO> lrec=makeNtrListDTO(ntrList,shifrnpr);
+//        List<NtrRecDTO> lrec=makeNtrListDTO(ntrList,shifrnpr);
+        List<NtrRecDTO> lrec=ntrDAO.getPageForPreFromFn(1,shifrnpr,1980,2030,1,500,0,0);
 
-//        List<NtrRecDTO> lrec=new ArrayList<NtrRecDTO>();
-//        List<NtrEntity> ntrList=ntrDAO.getAllForNPR(shifrnpr);
-//        for (NtrEntity ntrEntity:ntrList){
-//            NtrRecDTO ntrRecDTO=new NtrRecDTO();
-//            ntrRecDTO.setId(ntrEntity.getId());
-//            String s="";
-//            if (ntrEntity.getDatepubl()!=null)
-//                if (ntrEntity.getDatepubl().get(Calendar.YEAR)>1950) {
-//                    SimpleDateFormat sdf=new SimpleDateFormat("dd-M-YYYY");
-//                    try {
-//                        s=sdf.format(ntrEntity.getDatepubl().getTime());
-//                    } catch (IllegalArgumentException e)  {
-//                        s="";
-//                    }
-//                }
-//            ntrRecDTO.setDataapproved(s);
-//            if (ntrEntity.getStatus()==1) {
-//                ntrRecDTO.setApproved("Подтверждено");
-//            } else {
-//                ntrRecDTO.setApproved("");
-//            }
-//            ntrRecDTO.setName(ntrEntity.getName());
-//            ntrRecDTO.setHasattachement(getHasAttachement(ntrEntity.getId()));
-//            ntrRecDTO.setAuthors(getAuthors(ntrEntity.getId()));
-//            ntrRecDTO.setParametry(ntrEntity.getParametry());
-//            ntrRecDTO.setAmntOfImages(getAmntOfImagesForNtr(ntrEntity.getId()));
-//            ntrRecDTO.setAmntOfDocs(getAmntOfDocsForNtr(ntrEntity.getId()));
-//
-//            ntrRecDTO.setPokaz(ntrPokazService.getPokazForNtr(ntrEntity.getId()));
-//            s="";
-//            if (ntrEntity.getShifrpre()>0)  {
-//                s = podrService.getById(ntrEntity.getShifrpre()).getShortName();
-//                if ((s==null) || (s.trim().length()<1))
-//                    s = podrService.getById(ntrEntity.getShifrpre()).getName();
-//            }
-//            ntrRecDTO.setNamepre(s);
-//            s="";
-//            s=ntrPokazService.getPokazForNtr(ntrEntity.getId());
-//            lrec.add(ntrRecDTO);
-//        }
         return lrec;
     }
     private List<NtrRecDTO> makeNtrListDTO(List<NtrEntity> ntrList,int shifrnpr) {
@@ -357,8 +302,9 @@ public class NtrService {
         int y=Util.getCurrentYear();
         List<PokazListForJasperReportDTO> tPokazList=new ArrayList<PokazListForJasperReportDTO>();
         //    logger.debug("Amnt of road in datasource= "+roadService.getAllForWidRoad(shifridwr).size());
-
-        for (PokazEntityDTO re:podrService.getPokazAllForPre(shifrPre,y)) {
+        List<PokazEntityDTO> pl=podrService.getPokazAllForPre(shifrPre,y);
+        System.out.println("Amnt of rec for reports="+pl.size());
+        for (PokazEntityDTO re:pl) {
             PokazListForJasperReportDTO reJr=new PokazListForJasperReportDTO();
             reJr.setName(re.getName());
             reJr.setLineno(re.getLineno());

@@ -16,6 +16,7 @@ public class NtrRecDTO {
     private String pokaz;
     private int amntOfImages;
     private int amntOfDocs;
+    private int lineno;
 
 
     public String getNamepre() {
@@ -112,5 +113,13 @@ public class NtrRecDTO {
 
     public void setFioapproved(String fioapproved) {
         this.fioapproved = fioapproved;
+    }
+
+    public int getLineno() {
+        return lineno;
+    }
+
+    public void setLineno(int lineno) {
+        this.lineno = lineno;
     }
 }

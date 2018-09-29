@@ -15,6 +15,8 @@ public class NtrRecFromJSONDTO {
     private int amntOfImages;
     private int amntOfDocs;
     private int shifrPre;
+    private int idRinc;
+    private String hrefRinc;
 
 
     public int getId() {
@@ -103,5 +105,21 @@ public class NtrRecFromJSONDTO {
 
     public void setShifrPre(int shifrPre) {
         this.shifrPre = shifrPre;
+    }
+
+    public int getIdRinc() {
+        return idRinc;
+    }
+
+    public void setIdRinc(int idRinc) {
+        this.idRinc = idRinc;
+    }
+
+    public String getHrefRinc() {
+        return hrefRinc;
+    }
+
+    public void setHrefRinc(String hrefRinc) {
+        this.hrefRinc = hrefRinc;
     }
 }

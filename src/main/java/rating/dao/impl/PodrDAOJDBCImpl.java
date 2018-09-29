@@ -46,6 +46,8 @@ public class PodrDAOJDBCImpl implements PodrDAO {
             "where id=?";
     private static final String SQL_SELECT_POKAZ_FOR_PREDP="select a.id,a.lineno,a.name,valverified, valnotverified from public.tb_pokaz a,fn_getpokazforpredp(a.id,?,?)";
 
+    private static final String SQL_SELECT_POKAZS_FOR_PREDP="select p.id id,p.lineno lineno,p.name nam,coalesce(f.valverified,0) valverified from tb_pokaz p left outer join fn_getpokazsforpredp(?,?) f on p.id=f.id_v order by p.lineno";
+
     @Override
     @Transactional(readOnly = true)
     public PodrEntity getById(final Integer wantedId) {
@@ -219,14 +221,15 @@ public class PodrDAOJDBCImpl implements PodrDAO {
         RowMapper<PokazEntityDTO> mapper = new RowMapper<PokazEntityDTO>() {
             public PokazEntityDTO mapRow(ResultSet rs, int rowNum) throws SQLException {
                 PokazEntityDTO pe = new PokazEntityDTO();
-                pe.setName(rs.getString("name"));
+                pe.setName(rs.getString("nam"));
                 pe.setAmnt(rs.getDouble("valverified"));
                 pe.setLineno(rs.getInt("lineno"));
-                pe.setAmntn(rs.getDouble("valnotverified"));
+//                pe.setAmntn(rs.getDouble("valnotverified"));
+                pe.setAmntn(0);
                 return pe;
             }
         };
-        return jdbcTemplate.query(SQL_SELECT_POKAZ_FOR_PREDP, mapper, new Object[]{wantedId,wantedY});
+        return jdbcTemplate.query(SQL_SELECT_POKAZS_FOR_PREDP, mapper, new Object[]{wantedId,wantedY});
 
     }
 }

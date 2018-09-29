@@ -6,6 +6,7 @@ import org.apache.tiles.autotag.core.runtime.annotation.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
@@ -96,7 +97,7 @@ public class UtilController {
     private String servletContextPath;
 //    @Value("#{request.URI}")
 //    private String myURL;
-
+    @Secured({"ROLE_USER","ROLE_ADMIN","USER","ADMIN"})
     @RequestMapping(value="/ustep/{id}",method = RequestMethod.GET,produces = "application/json")
     @ResponseBody
     public  ItemErrorDTO getShortNameUStepByCode(@PathVariable("id") int id) {
@@ -146,6 +147,26 @@ public class UtilController {
         return userDTOForVUE;
 
     }
+    @RequestMapping(value="/user/fio/{id}",method = RequestMethod.GET,produces = "application/json")
+    @ResponseBody
+    public List<ItemErrorDTO> getFioNprForFolter(@PathVariable("id") int id) {
+        String shortFio;
+        StringBuffer fio = new StringBuffer();
+        UserEntity uEntity=userService.getById(id);
+        fio.append(uEntity.getFam());
+        if (uEntity.getNam()!=null && uEntity.getNam().length()>1)
+            fio.append(" "+uEntity.getNam());
+        if (uEntity.getOtc()!=null && uEntity.getOtc().length()>1)
+            fio.append(" "+uEntity.getOtc());
+        String f;
+        f=fio.toString();
+        logger.debug("get Fio Fio="+f);
+        shortFio= ShortFio.getShortFio(f);
+        logger.debug("get Fio shortFio="+shortFio);
+        List<ItemErrorDTO> okList = new ArrayList<ItemErrorDTO>();
+        okList.add(new ItemErrorDTO(1, shortFio, shortFio));
+        return okList;
+    }
     @RequestMapping(value="/univs/{owner}",method = RequestMethod.GET,produces = "application/json")
     @ResponseBody
     public  List<PodrEntityDTO> getUnivList(@PathVariable("owner") int owner) {
@@ -184,6 +205,8 @@ public class UtilController {
         podrEntity=podrService.getById(id);
         return podrEntity;
     }
+
+    @Secured({"ROLE_ADMIN","ADMIN"})
 
     @RequestMapping(value = "/univ/save", method = RequestMethod.POST, produces = "application/json",consumes = "application/json")
 //    @PostMapping(path = "/univ/save", consumes = "application/json")
@@ -334,10 +357,10 @@ public class UtilController {
     @RequestMapping(value="/users/{shifrpre}/{pageno}/{pagesize}/{order}",method = RequestMethod.GET,produces = "application/json")
     @ResponseBody
     public  List<UserNPRDTOForVUEList> getPageUserList(@PathVariable("shifrpre") int shifrPre,
-                                                   @PathVariable("pageno")   int pageNo,
-                                                   @PathVariable("pagesize") int pageSize,
-                                                   @PathVariable("order") int order
-                                                   ) {
+                                                       @PathVariable("pageno")   int pageNo,
+                                                       @PathVariable("pagesize") int pageSize,
+                                                       @PathVariable("order") int order
+    ) {
         List<UserNPRDTOForVUEList> uList;
         logger.debug("Try find page "+pageNo+" users for shifrpre = "+shifrPre);
         UserInfo userInfo=new UserInfo();
@@ -811,6 +834,47 @@ public class UtilController {
         }
         return ntrList;
     }
+//---------------
+    @RequestMapping(value="/ntrs/{kind}/{shifrpre}/{yfr}/{yto}/{pageno}/{pagesize}/{order}/{shifridnprfilter}",method = RequestMethod.GET,produces = "application/json")
+    @ResponseBody
+    public  List<NtrRecDTO> getPageNtrList(@PathVariable("kind") int kind,
+                                           @PathVariable("shifrpre") int shifrpre,
+                                           @PathVariable("yfr") int yfr,
+                                           @PathVariable("yto") int yto,
+                                           @PathVariable("pageno")   int pageNo,
+                                           @PathVariable("pagesize") int pageSize,
+                                           @PathVariable("order") int order,
+                                           @PathVariable("shifridnprfilter") int shifridnprfilter
+        ) {
+        int ytoself,yfromself,shifridnprfilterself;
+        yfromself = 1960;
+        if (yfr>0)
+            yfromself=yfr;
+        ytoself   = GregorianCalendar.getInstance().get(Calendar.YEAR);
+        if (yto>0)
+            ytoself=yto;
+        shifridnprfilterself=0;
+        if (shifridnprfilter>0)
+            shifridnprfilterself=shifridnprfilter;
+        List<NtrRecDTO> ntrList;
+        logger.debug("Try find ntrList page "+pageNo+" ntrs for shifrpre = "+shifrpre);
+        ntrList=ntrService.getPageNtrListForPre(kind,shifrpre,yfromself,ytoself,pageNo,pageSize,order,shifridnprfilterself);
+        return ntrList;
+    }
+    @RequestMapping(value="/apntrs/{shifrpre}/{mode}/{yfr}/{yto}/{shifridnprforfilter}",method = RequestMethod.GET,produces = "application/json")
+    @ResponseBody
+    public  String getAmntOfPageNtrList(@PathVariable("shifrpre") int shifrpre,
+                                        @PathVariable("mode") int mode,
+                                        @PathVariable("yfr") int yfr,
+                                        @PathVariable("yto") int yto,
+                                        @PathVariable("shifridnprforfilter") int shifridnprforfilter) {
+        logger.debug("Get amnt of ntr pages for shifrpre = "+shifrpre+" mode="+mode);
+
+        Integer amntOfPages=ntrService.getCountNtr(mode,shifrpre,yfr,yto,shifridnprforfilter);
+
+        return amntOfPages.toString();
+    }
+
 
     @RequestMapping(value="/ntr/{id}",method = RequestMethod.GET,produces = "application/json")
     @ResponseBody
@@ -855,6 +919,8 @@ public class UtilController {
                 da="";
             }
             ntrRecFromJSONDTO.setDataapproved(da);
+            ntrRecFromJSONDTO.setIdRinc(ntrEntity.getIdRinc());
+            ntrRecFromJSONDTO.setHrefRinc(ntrEntity.getHrefRinc());
         }
         return ntrRecFromJSONDTO;
     }
@@ -997,6 +1063,17 @@ public class UtilController {
         else
             logger.debug("cannot find any matchig records for "+fio);
 
+        return suddd;
+    }
+
+    @RequestMapping(value="/semanticui/dropdown/tags",method = RequestMethod.GET,produces = "application/json")
+    @ResponseBody
+    public SemanticUIDropDownDTO getSemanticUIDropDownListEmpty() {
+//        System.setProperty("console.encoding","Cp866");
+        SemanticUIDropDownDTO suddd;
+//        System.out.println("query="+query);
+        suddd=new SemanticUIDropDownDTO(false);
+        logger.debug("Empty query for DDB");
         return suddd;
     }
 

@@ -47,6 +47,14 @@
                         <p v-if="approvedrec">{{editingrec.datepubl}}</p>
                         <vue-datepicker-local v-else v-model="editingrec.datepubl" clearable format="YYYY-MM"></vue-datepicker-local>
                     </div>
+                    <div>
+                        <label>Код РИНЦ</label>
+                        <input v-model="editingrec.idRinc" type="text"  placeholder="Код РИНЦ"  maxlength="10"/>
+                        <label>Ссылка на страницу eLIBRARY</label>
+                        <input v-model="editingrec.hrefRinc" type="text"  placeholder="Ссылка на страницу eLIBRARY"  maxlength="128"/>
+                        <a v-if="correctRINCHREF" v-bind:href="''+editingrec.hrefRinc+''" target="_blank">Просмотр</a>
+                    </div>
+
                 </div>
                 <div class="ui bottom attached tab segment" data-tab="second">
                <%--     <div>  --%>
@@ -172,7 +180,7 @@
                 <div class="ui bottom attached tab segment" data-tab="four" v-if="isadmin">
                     <div>
                         <label>Характеристики</label>
-                        <div >
+                        <div>
                             <podrselector ref='podrslctr' v-bind:podrid  = "shifrpodr"
                                           v-on:eselpodr  = "ePodrSelected"
                                           v-on:enamepodr = "eNamePodr"></podrselector>
@@ -1360,7 +1368,16 @@
                 var retval;
                 retval=this.$parent.isadmin;
                 return retval;
+            },
+            correctRINCHREF:function() {
+                var tmpl="https://elibrary.ru/item.asp?id=";
+                if (!this.editingrec) return false;
+                if (!this.editingrec.hrefRinc) return false;
+                var i=this.editingrec.hrefRinc.indexOf(tmpl);
+                if (i<0) return false;
+                return true;
             }
+
         },
         watch: {
             receivedaction:function(val){

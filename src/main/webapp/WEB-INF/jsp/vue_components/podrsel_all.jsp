@@ -1,8 +1,4 @@
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-<%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <%@ page contentType="text/html;charset=UTF-8" pageEncoding="UTF-8" language="java" %>
-<%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <template id="template-podrselector">
     <a id="one-node-selectable" class="ui black basic button" >Подразделения (Выбрано 0) </a>
 </template>
@@ -68,6 +64,7 @@ var podrselector=Vue.extend({
         },
         showTreePicker:function(mode) {
             var vm=this;
+//            alertify.alert("showTreePicker. mode="+mode);
 //            console.log('inside showTreePicker this.podrlist='+this.podrlist+" vm.podrid="+this.podrid+" amnt of elem="+$('#one-node-selectable').length+' '+JSON.stringify(this.podrlist));
             if (mode==0) {
                this.convertPodrList(vm.podrlist);

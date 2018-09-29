@@ -1,8 +1,5 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-<%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <%@ page contentType="text/html;charset=UTF-8" pageEncoding="UTF-8" language="java" %>
-<%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <script>
     //  const Univ = { template: '<div>Univ</div>' }
     const Fac  = { template: '<div>Fac</div>' }
@@ -165,7 +162,17 @@
             isLoading:true,
             isLoadingContent:false,
             currentRoute: window.location.pathname,
-            rootPath:'/r'
+            rootPath:'/r',
+            ntrFilter:{
+                needYear   : false,
+                yearFr     : 1970,
+                yearTo     : 2018,
+                needNPR    : false,
+                shifrNpr   : 0,
+                needPredp  : false,
+                shifrPredp : 0,
+                namePredp  : ''
+            }
         },
         components: {
             'univtable'  : univtable  ,

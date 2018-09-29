@@ -123,7 +123,10 @@
     <!--   p:privateKey="ADD-YOUR-PRIVATE-KEY-HERE" /> -->
     <beans:bean id="customUserDetailsService" class="rating.service.CustomUserDetailsService"
      />
-
+    <global-method-security
+            jsr250-annotations="enabled"
+            pre-post-annotations="enabled"
+            secured-annotations="enabled"/>
     <authentication-manager>
         <authentication-provider user-service-ref="customUserDetailsService">
 
