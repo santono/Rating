@@ -19,7 +19,7 @@ public interface NtrDAO {
 
     public List<NtrEntity> getPageForPre(int shifrpre,int pageNo,int pageSize,int order);
 
-    public List<NtrRecDTO> getPageForPreFromFn(int kind,int shifrpre,int yfr, int yto, int pageNo, int pageSize, int order,int shifridnprforfilter);
+    public List<NtrRecDTO> getPageForPreFromFn(int kind,int shifrpre,int yfr, int yto, int pageNo, int pageSize, int order,int shifridnprforfilter,int shifriddetforfilter);
 
     public List<NtrEntity> getAllForNPR(int shifrnpr);
 
@@ -36,5 +36,5 @@ public interface NtrDAO {
     public List<SemanticUISearchItemDTO> getSourceForSemanticUISearch(String wantedName);
 
 //    public int getCountNtr(int shifrpre,int mode);
-    public int getCountNtr(int kind,int shifrpre,int yfr,int yto,int shifridnprforfilter);
+    public int getCountNtr(int kind,int shifrpre,int yfr,int yto,int shifridnprforfilter,int shifriddetforfilter);
 }

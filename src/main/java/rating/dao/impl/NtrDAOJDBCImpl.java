@@ -68,11 +68,11 @@ public class NtrDAOJDBCImpl implements NtrDAO {
     private static final String SQL_ALL_DTO_PAGER="select  id,name,approved,dataapproved,fioapproved,"+
             "hasattachement,authors,namepre,parametry,"+
             "pokaz, amntofimages, amntofdocs , lineno"+
-            " from fn_getntrrecdtos(?,?,?,?,?,?,?,?,0)";
+            " from fn_getntrrecdtos(?,?,?,?,?,?,?,?,?,0)";
     private static final String SQL_COUNT_ALL_DTO_PAGER="select  id,name,approved,dataapproved,fioapproved,"+
             "hasattachement,authors,namepre,parametry,"+
             "pokaz, amntofimages, amntofdocs , lineno"+
-            " from fn_getntrrecdtos(?,?,?,?,?,?,?,?,1)";
+            " from fn_getntrrecdtos(?,?,?,?,?,?,?,?,?,1)";
 
     private static final String SQL_ORDER_0=" order by id asc";
     private static final String SQL_ORDER_10=" order by id desc";
@@ -272,7 +272,7 @@ public class NtrDAOJDBCImpl implements NtrDAO {
 
     @Transactional(readOnly = true)
     @Override
-    public List<NtrRecDTO> getPageForPreFromFn(int kind,int shifrpre,int yfr, int yto, int pageNo, int pageSize, int order,int shifridnprforfilter) {
+    public List<NtrRecDTO> getPageForPreFromFn(int kind,int shifrpre,int yfr, int yto, int pageNo, int pageSize, int order,int shifridnprforfilter,int shifriddetforfilter) {
         RowMapper<NtrRecDTO> mapper = new RowMapper<NtrRecDTO>() {
             public NtrRecDTO mapRow(ResultSet rs, int rowNum) throws SQLException {
                 NtrRecDTO ntr = new NtrRecDTO();
@@ -291,12 +291,12 @@ public class NtrDAOJDBCImpl implements NtrDAO {
                 return ntr;
             }
         };
-        return jdbcTemplate.query(SQL_ALL_DTO_PAGER, mapper , new Object[]{Integer.valueOf(kind),shifrpre,yfr,yto,pageNo,pageSize,order,shifridnprforfilter});
+        return jdbcTemplate.query(SQL_ALL_DTO_PAGER, mapper , new Object[]{Integer.valueOf(kind),shifrpre,yfr,yto,pageNo,pageSize,order,shifridnprforfilter,shifriddetforfilter});
     }
 
     @Transactional(readOnly = true)
     @Override
-    public int getCountNtr(int kind,int shifrpre,int yfr,int yto,int shifridnprforfilter) {
+    public int getCountNtr(int kind,int shifrpre,int yfr,int yto,int shifridnprforfilter,int shifriddetforfilter) {
         int retVal=0;
         RowMapper<NtrRecDTO> mapper = new RowMapper<NtrRecDTO>() {
             public NtrRecDTO mapRow(ResultSet rs, int rowNum) throws SQLException {
@@ -316,7 +316,7 @@ public class NtrDAOJDBCImpl implements NtrDAO {
                 return ntr;
             }
         };
-        List<NtrRecDTO> l = jdbcTemplate.query(SQL_COUNT_ALL_DTO_PAGER, mapper , new Object[]{Integer.valueOf(kind),shifrpre,yfr,yto,1,10,1,shifridnprforfilter});
+        List<NtrRecDTO> l = jdbcTemplate.query(SQL_COUNT_ALL_DTO_PAGER, mapper , new Object[]{Integer.valueOf(kind),shifrpre,yfr,yto,1,10,1,shifridnprforfilter,shifriddetforfilter});
         if (l.size()==1) {
             retVal=l.get(0).getAmntOfImages();
         }

@@ -11,7 +11,9 @@
         { path: '/chgpwd/:id', component: chgpwdform,name:'chgpwd' },
         { path: '/udata/:id', component: udataform,name:'udata' },
         { path: '/dolg', component: dolgtable },
-        { path: '/reppokaz', component:reportpokaztable}
+        { path: '/reppokaz', component:reportpokaztable},
+        { path: '/reprating', component:reportratingtable},
+        { path: '/diagram/:id', component:diagram}
     ];
     const router = new VueRouter({
         'routes':routes // short for `routes: routes`
@@ -171,7 +173,9 @@
                 shifrNpr   : 0,
                 needPredp  : false,
                 shifrPredp : 0,
-                namePredp  : ''
+                namePredp  : '',
+                needDet    : false,
+                shifrDet   : 0
             }
         },
         components: {
@@ -182,7 +186,8 @@
             'chgpwdform' : chgpwdform ,
             'udataform'  : udataform  ,
             'dolgtable'  : dolgtable  ,
-            'reportpokaztable' : reportpokaztable
+            'reportpokaztable' : reportpokaztable,
+            'reportratingtable': reportratingtable
 
         },
         computed:{
@@ -310,12 +315,28 @@
                     }
             },
             browsereppokaz:function() {
-               if (this.user)
-                  if (this.user.shifrPodr) {
-                      var path='/reppokaz';
-                      this.clearDOM();
-                       this.$router.push(path);
-                  }
+                if (this.user)
+                    if (this.user.shifrPodr) {
+                        var path='/reppokaz';
+                        this.clearDOM();
+                        this.$router.push(path);
+                    }
+            },
+            browsereprating:function() {
+                if (this.user)
+                    if (this.user.shifrPodr) {
+                        var path='/reprating';
+                        this.clearDOM();
+                        this.$router.push(path);
+                    }
+            },
+            browsediagram:function() {
+                if (this.user)
+                    if (this.user.shifrPodr) {
+                        var path='/diagram/'+this.user.shifrPodr;
+                        this.clearDOM();
+                        this.$router.push(path);
+                    }
             },
             clearDOM:function() {
                 var names=['#modaluniv','#modalntr','#modalpokaz','#modaluser','#modaldolg'];

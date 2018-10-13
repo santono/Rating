@@ -1,8 +1,4 @@
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-<%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <%@ page contentType="text/html;charset=UTF-8" pageEncoding="UTF-8" language="java" %>
-<%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <script>
     var appSidebar = new Vue({
         data: {
@@ -27,6 +23,12 @@
             },
             browsereppokaz:function() {
                 window.app.browsereppokaz();
+            },
+            browsereprating:function() {
+                window.app.browsereprating();
+            },
+            browsediagram:function() {
+                window.app.browsediagram()
             },
             activatechgpwdform:function() {
                 window.app.activatechgpwdform();

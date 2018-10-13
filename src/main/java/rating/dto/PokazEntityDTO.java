@@ -7,6 +7,7 @@ public class PokazEntityDTO {
     private int lineno;
     private double amnt;
     private double amntn;
+    private int countntr;
 
     public String getName() {
         return name;
@@ -38,6 +39,15 @@ public class PokazEntityDTO {
     public void setLineno(int lineno) {
         this.lineno = lineno;
     }
+
+    public int getCountntr() {
+        return countntr;
+    }
+
+    public void setCountntr(int countntr) {
+        this.countntr = countntr;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

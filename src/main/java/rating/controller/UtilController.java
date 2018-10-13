@@ -835,7 +835,7 @@ public class UtilController {
         return ntrList;
     }
 //---------------
-    @RequestMapping(value="/ntrs/{kind}/{shifrpre}/{yfr}/{yto}/{pageno}/{pagesize}/{order}/{shifridnprfilter}",method = RequestMethod.GET,produces = "application/json")
+    @RequestMapping(value="/ntrs/{kind}/{shifrpre}/{yfr}/{yto}/{pageno}/{pagesize}/{order}/{shifridnprfilter}/{shifriddetfilter}",method = RequestMethod.GET,produces = "application/json")
     @ResponseBody
     public  List<NtrRecDTO> getPageNtrList(@PathVariable("kind") int kind,
                                            @PathVariable("shifrpre") int shifrpre,
@@ -844,9 +844,10 @@ public class UtilController {
                                            @PathVariable("pageno")   int pageNo,
                                            @PathVariable("pagesize") int pageSize,
                                            @PathVariable("order") int order,
-                                           @PathVariable("shifridnprfilter") int shifridnprfilter
+                                           @PathVariable("shifridnprfilter") int shifridnprfilter,
+                                           @PathVariable("shifriddetfilter") int shifriddetfilter
         ) {
-        int ytoself,yfromself,shifridnprfilterself;
+        int ytoself,yfromself,shifridnprfilterself,shifriddetfilterself;
         yfromself = 1960;
         if (yfr>0)
             yfromself=yfr;
@@ -856,21 +857,25 @@ public class UtilController {
         shifridnprfilterself=0;
         if (shifridnprfilter>0)
             shifridnprfilterself=shifridnprfilter;
+        shifriddetfilterself=0;
+        if (shifriddetfilter>0)
+            shifriddetfilterself=shifriddetfilter;
         List<NtrRecDTO> ntrList;
         logger.debug("Try find ntrList page "+pageNo+" ntrs for shifrpre = "+shifrpre);
-        ntrList=ntrService.getPageNtrListForPre(kind,shifrpre,yfromself,ytoself,pageNo,pageSize,order,shifridnprfilterself);
+        ntrList=ntrService.getPageNtrListForPre(kind,shifrpre,yfromself,ytoself,pageNo,pageSize,order,shifridnprfilterself,shifriddetfilterself);
         return ntrList;
     }
-    @RequestMapping(value="/apntrs/{shifrpre}/{mode}/{yfr}/{yto}/{shifridnprforfilter}",method = RequestMethod.GET,produces = "application/json")
+    @RequestMapping(value="/apntrs/{shifrpre}/{mode}/{yfr}/{yto}/{shifridnprforfilter}/{shifriddetforfilter}",method = RequestMethod.GET,produces = "application/json")
     @ResponseBody
     public  String getAmntOfPageNtrList(@PathVariable("shifrpre") int shifrpre,
                                         @PathVariable("mode") int mode,
                                         @PathVariable("yfr") int yfr,
                                         @PathVariable("yto") int yto,
-                                        @PathVariable("shifridnprforfilter") int shifridnprforfilter) {
+                                        @PathVariable("shifridnprforfilter") int shifridnprforfilter,
+                                        @PathVariable("shifriddetforfilter") int shifriddetforfilter) {
         logger.debug("Get amnt of ntr pages for shifrpre = "+shifrpre+" mode="+mode);
 
-        Integer amntOfPages=ntrService.getCountNtr(mode,shifrpre,yfr,yto,shifridnprforfilter);
+        Integer amntOfPages=ntrService.getCountNtr(mode,shifrpre,yfr,yto,shifridnprforfilter,shifriddetforfilter);
 
         return amntOfPages.toString();
     }
@@ -1679,6 +1684,28 @@ public class UtilController {
         logger.debug("Try load pokazList. Amnt of recs= "+pokazList.size());
         return pokazList;
     }
+    @RequestMapping(value="/reprating/{shifrpre}/{yfrom}/{yto}",method = RequestMethod.GET,produces = "application/json")
+    @ResponseBody
+    public  List<RatingNprRecDTO> getRepRatingNprList(@PathVariable long shifrpre,
+                                                      @PathVariable int yfrom,
+                                                      @PathVariable int yto) {
+        List<RatingNprRecDTO> ratingList;
+//       int y=Util.getCurrentYear();
+        ratingList=podrService.getRatingAllForPre((int) shifrpre,yfrom,yto);
+        logger.debug("Try load ratingList. Amnt of recs= "+ratingList.size());
+        return ratingList;
+    }
 
+    @RequestMapping(value="/diapokcolumn/{shifrpre}/{yfrom}/{yto}",method = RequestMethod.GET,produces = "application/json")
+    @ResponseBody
+    public  PokazBarByYearDTO getPokazBarByYearForPre(@PathVariable long shifrpre,
+                                                      @PathVariable int yfrom,
+                                                      @PathVariable int yto) {
+        PokazBarByYearDTO pb;
+//       int y=Util.getCurrentYear();
+        pb=podrService.getPokazBarByYearForPre((int) shifrpre,yfrom,yto);
+        logger.debug("Try load diapokcolumn. ShifrPre="+shifrpre);
+        return pb;
+    }
 
 }

@@ -111,7 +111,7 @@ public class NtrService {
         return lrec;
     }
 
-    public List<NtrRecDTO> getPageNtrListForPre(int kind,int shifrpre,int yfrom,int yto,int pageNo,int pageSize,int order,int shifridnprforfilter) {
+    public List<NtrRecDTO> getPageNtrListForPre(int kind,int shifrpre,int yfrom,int yto,int pageNo,int pageSize,int order,int shifridnprforfilter,int shifriddetforfilter) {
 //        List<NtrEntity> ntrList;
 //        if (pageNo<1) {
 //            ntrList = ntrDAO.getAllForPre(shifrpre);
@@ -119,21 +119,21 @@ public class NtrService {
 //            ntrList = ntrDAO.getPageForPre(shifrpre,pageNo,pageSize,order);
 //        }
 //        List<NtrRecDTO> lrec=makeNtrListDTO(ntrList,0);
-        List<NtrRecDTO> lrec=ntrDAO.getPageForPreFromFn(kind,shifrpre,yfrom,yto,pageNo,pageSize,order,shifridnprforfilter);
+        List<NtrRecDTO> lrec=ntrDAO.getPageForPreFromFn(kind,shifrpre,yfrom,yto,pageNo,pageSize,order,shifridnprforfilter,shifriddetforfilter);
 
         return lrec;
     }
-    public int getCountNtr(int kind,int shifrpre,int yfr,int yto,int shifridnprforfilter) {
+    public int getCountNtr(int kind,int shifrpre,int yfr,int yto,int shifridnprforfilter,int shifriddetforfilter) {
         // mode=0 - predp mode=1 user
         int retVal;
-        retVal=ntrDAO.getCountNtr(kind,shifrpre,yfr,yto,shifridnprforfilter);
+        retVal=ntrDAO.getCountNtr(kind,shifrpre,yfr,yto,shifridnprforfilter,shifriddetforfilter);
         return retVal;
     }
     
     public List<NtrRecDTO> getNtrListForNPR(int shifrnpr) {
         List<NtrEntity> ntrList=ntrDAO.getAllForNPR(shifrnpr);
 //        List<NtrRecDTO> lrec=makeNtrListDTO(ntrList,shifrnpr);
-        List<NtrRecDTO> lrec=ntrDAO.getPageForPreFromFn(1,shifrnpr,1980,2030,1,500,0,0);
+        List<NtrRecDTO> lrec=ntrDAO.getPageForPreFromFn(1,shifrnpr,1980,2030,1,500,0,0,0);
 
         return lrec;
     }

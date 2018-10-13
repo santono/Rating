@@ -4,10 +4,7 @@ import rating.dao.PodrDAO;
 import rating.domain.PodrEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import rating.dto.ItemErrorDTO;
-import rating.dto.PodrEntityDTO;
-import rating.dto.PodrTreeDTO;
-import rating.dto.PokazEntityDTO;
+import rating.dto.*;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -160,7 +157,36 @@ public class PodrService {
            return sb.toString();
     }
     public List<PokazEntityDTO> getPokazAllForPre(final int wantedId,final int wantedY) {
-           return podrDAO.getPokazAllForPre(wantedId,wantedY);
+        return podrDAO.getPokazAllForPre(wantedId, wantedY);
     }
+    public List<RatingNprRecDTO> getRatingAllForPre(final int wantedId,final int yfr,final int yto) {
+        return podrDAO.getRatingAllForPre(wantedId, yfr,yto);
+    }
+    public PokazBarByYearDTO getPokazBarByYearForPre(int wantedId, int yfr,int yto) {
+        String[] serNames={"Scopus","Web of Science","РИНЦ","Учебники","Патенты России"};
+        int[]  pokazs={14,12,7,37,42};
+        PokazBarByYearDTO diagram= new PokazBarByYearDTO();
+        String pName=getById(wantedId).getName();
+        diagram.setTitle(pName);
+        pName=""+yfr+" - "+yto;
+        diagram.setSubtitle(pName);
+        List<String> series=new ArrayList<String>();
+        for (int i=yfr;i<=yto;i++) {
+            series.add(""+i);
+        }
+        diagram.setCategories(series);
+        List<ColumnDiagramSerieDTO> diaSeries=new ArrayList<ColumnDiagramSerieDTO>();
+        for (int i=0;i<pokazs.length;i++) {
+            ColumnDiagramSerieDTO col=new ColumnDiagramSerieDTO();
+            List<Integer> serie;
+            serie=podrDAO.getPokazBarSerie(pokazs[i],wantedId,yfr,yto);
+            col.setName(serNames[i]);
+            col.setData(serie);
+            diaSeries.add(col);
+        }
+        diagram.setSeries(diaSeries);
+        return diagram;
+    };
+
 
 }

@@ -1,6 +1,4 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-<%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <%@ page contentType="text/html;charset=UTF-8" pageEncoding="UTF-8" language="java" %>
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <!DOCTYPE html>
@@ -38,6 +36,10 @@
     <spring:url value="/resources/css/alertify/themes/semantic.min.css" var="alertify_semantic_css_url" />
     <spring:url value="/resources/js/PDFViewer.js" var="pdfviewer_js_url"/>
 
+    <spring:url value="/resources/js/highcharts/highcharts.js" var="highcharts_url" />
+    <spring:url value="/resources/js/highcharts/highcharts-3d.js" var="highcharts3d_url" />
+    <spring:url value="/resources/js/highcharts/modules/exporting.js" var="exporting_url" />
+
     <!-- Site Properties -->
     <title>Учет научных работ НПР</title>
 <%--
@@ -60,6 +62,12 @@
     <script src="${photoswipe_js_url}"></script>
     <script src="${photoswipe_ui_default_js_url}"></script>
     <script src="${pdfviewer_js_url}"></script>
+
+    <script src="${highcharts_url}"></script>
+    <script src="${highcharts3d_url}"></script>
+    <script src="${exporting_url}"></script>
+
+
     <style type="text/css">
         body {
             background-color: #FFFFFF;
@@ -80,24 +88,7 @@
         body.pushable {
             background-color: #FFFFFF; !important
         }
-<%--
-        #accordionmenu {
-            margin-left:0     !important;
-            margin-right:0     !important;
-            font-size:14px    !important;
-            color:rgb(255, 255, 255) !important;
-        }
-        #accordionmenuadmin {
-            margin-left:0;     !important;
-            margin-right:0;     !important;
-            font-size:14px;    !important;
-            color:rgb(255, 255, 255) !important;
-        }
---%>
         .ui.vertical.menu .item >.menu {
-<%--
-        .ui .vertical .fluid .accordion .text .menu {
---%>
             margin-left:0            !important;
             margin-right:0           !important;
             font-size:14px           !important;
@@ -216,35 +207,12 @@
         Сервер:y50163q3.beget.tech
     --%>
     <script type="text/javascript">
-        // using context
-
-        //$('.ui.sidebar')
-        //  .sidebar({
-        //    context: $('.bottom.segment')
-        //  })
-        //  .sidebar('attach events', '.menu .item')
-        //;
-        //$('.left.sidebar').first()
-        //  .sidebar('attach events', '.sidebar.icon','show')
-        //;
-        //$('.sidebar.icon')
-        //  .removeClass('disabled')
-        //;
         $(function() {
             $('#show-sidebar').click(function() {
                 //  $('#show-sidebar').hide();
                 $('.ui.sidebar').sidebar('toggle');
                 $('.ui.accordion').accordion({ exclusive: false });
-              //  $('#ddnprmenu').dropdown({direction:'downward'});
             });
-//            $('.ui.sidebar')
-//                    .sidebar({
-//                        onHide: function() {
-//                            console.log('on hidden');
-//                        $('body').css( "background-color","#FFFFFF" );
-//                            $('body.pushable').css( "background-color","#FFFFFF" );
-//                        }
-//                    });
             $('#sbar').hide(function() {
                 $('body').css( "background-color","#FFFFFF" );
 //                $('body').removeClass( "pushable" );
@@ -268,18 +236,6 @@
                        Меню
                    </a>
                </div>
-<%--
-               <div class="ui dropdown menu" v-if="isnpr" v-cloak>
-                   <a class="item">
-                       <i class="sidebar icon"></i>
-                       Личные данные
-                   </a>
-                   <a class="item">
-                       <i class="sidebar icon"></i>
-                       Смена пароля
-                   </a>
-               </div>
---%>
                <a href="${mainPageUrl}" class="header item tiny ui button">На главную</a>
                <div class="header item center">
                    <div class="ui tiny inline loader" v-bind:class="{ active: isLoading }" id="hloader"></div>
@@ -295,20 +251,10 @@
 
 <div id="sbar" class="ui inverted labeled icon left inline vertical sidebar menu" style="">
     <div id="appSidebar" >
-<%--
-    <router-link v-show="isadmin" to="/univ/1" class="item" ><i class="block layout icon"></i>Подразделения </router-link>
---%>
     <a class="item" v-show="isadmin || isdataadmin" v-on:click="browsentrlist" v-cloak>
         <i class="list icon"></i>
         Н-Т работы
     </a>
-<%--
-    <a class="item" v-show="isadmin || isdataadmin" v-cloak>
-        <i class="smile icon"></i>
-        Своды
-
-    </a>
---%>
     <div class="item" v-if="isadmin  || isdataadmin">
         <div class="ui vertical fluid accordion text menu" id="accordionmenuswodyadmin"  >
             <div class="item">
@@ -321,6 +267,15 @@
                         <i class="block layout icon"></i>
                         Показатели
                     </a>
+                    <a class="item" v-show="isadmin || isdataadmin" v-on:click="browsereprating" v-cloak >
+                        <i class="block layout icon"></i>
+                        Рейтинг НПР
+                    </a>
+                    <a class="item" v-show="isadmin || isdataadmin" v-on:click="browsediagram" v-cloak >
+                        <i class="block layout icon"></i>
+                        Диаграммы
+                    </a>
+
                 </div>
             </div>
         </div>
@@ -351,19 +306,6 @@
             </div>
         </div>
 
-<%--
-        <div class="header">Личный кабинет</div>
-        <div class="menu">
-            <a class="item"  v-if="isnpr" v-cloak>
-                <i class="address card icon"></i>
-                Личные данные
-            </a>
-            <a class="item"  v-if="isnpr && !visiblechgpwd" v-on:click="activatechgpwdform" v-cloak>
-                <i class="user secret icon"></i>
-                Смена пароля
-            </a>
-        </div>
---%>
     </div>
     <div class="item" v-if="isadmin">
         <div class="ui vertical fluid accordion text menu" id="accordionmenuadmin"  >
@@ -400,59 +342,7 @@
                 </div>
             </div>
         </div>
-
-        <%--
-                <div class="header">Справочники</div>
-                <div class="menu">
-                   <a class="item" v-show="isadmin || isdataadmin" v-on:click="browsepodr" v-cloak>
-                      <i class="site map icon"></i>
-                      Подразделения
-                   </a>
-                   <a class="item" v-show="isadmin  || isdataadmin" v-on:click="browseuserslist" v-cloak>
-                      <i class="address card icon"></i>
-                      ППС
-                   </a>
-                   <a class="item" v-show="isadmin" v-on:click="browsepokazlist" v-cloak>
-                      <i class="block layout icon"></i>
-                       Показатели
-                   </a>
-                    <a class="item"  v-show="isadmin" v-cloak>
-                        <i class="list icon"></i>
-                        Ученые степени
-                    </a>
-                    <a class="item"  v-show="isadmin" v-cloak>
-                        <i class="list icon"></i>
-                        Ученые звания
-                    </a>
-               </div>
-        --%>
     </div>
-
-<%--
-        <div class="ui dropdown item" id="ddnprmenu">
-            Language <i class="dropdown icon"></i>
-            <div class="menu">
-                <a class="item">English</a>
-                <a class="item">Russian</a>
-                <a class="item">Spanish</a>
-            </div>
-        </div>
---%>
-<%--
-    <a class="item ui dropdown " v-show="isnpr" v-cloak>
-         <i class="block layout icon"></i>
-         <span class="text">Личные данные</span>
-         <i class="dropdown icon"></i>
-         <div class="menu" >
-             <a class="item" v-on:click="browsentrlist" v-cloak>
-                 Личные данные
-             </a>
-             <a class="item" v-on:click="browsentrlist" v-cloak>
-                 Сменая пароля
-             </a>
-         </div>
-    </a>
---%>
     </div> <%-- end of appSidebar --%>
 </div>
 
@@ -576,21 +466,37 @@
 <%@ include file="vue_components/pokazrow_all.jsp"%>
 <%@ include file="vue_components/pokazform_all.jsp"%>
 <%@ include file="vue_components/pokaztable_all.jsp"%>
-
+<%--
 <%@ include file="vue_components/dolgrow_all.jsp"%>
 <%@ include file="vue_components/dolgform_all.jsp"%>
 <%@ include file="vue_components/dolgtable_all.jsp"%>
-
-
+--%>
+<jsp:include page="vue_components/dolgrow_all.jsp"   />
+<jsp:include page="vue_components/dolgform_all.jsp"  />
+<jsp:include page="vue_components/dolgtable_all.jsp" />
+<%--
 <%@ include file="vue_components/authors_all.jsp"%>
 <%@ include file="vue_components/ntrrow_all.jsp"%>
 <%@ include file="vue_components/ntrform_all.jsp"%>
 <%@ include file="vue_components/ntrtable_all.jsp"%>
-
-
+--%>
+<jsp:include page="vue_components/authors_all.jsp"  />
+<jsp:include page="vue_components/ntrrow_all.jsp"   />
+<jsp:include page="vue_components/ntrform_all.jsp"  />
+<jsp:include page="vue_components/ntrtable_all.jsp" />
+<%--
 <%@ include file="vue_components/chgpwdform_all.jsp"%>
 <%@ include file="vue_components/udataform_all.jsp"%>
 <%@ include file="vue_components/reportpokaztable_all.jsp"%>
+--%>
+<jsp:include page="vue_components/chgpwdform_all.jsp" />
+<jsp:include page="vue_components/udataform_all.jsp" />
+<jsp:include page="vue_components/reportpokaztable_all.jsp" />
+<%--
+<%@ include file="vue_components/reportratingtable_all.jsp"%>
+--%>
+<jsp:include page="vue_components/reportratingtable_all.jsp" />
+<jsp:include page="vue_components/diagram_all.jsp" />
 
 <%--
 <%@ include file="vue_components/js/univform.jsp"%>

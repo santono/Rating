@@ -6,7 +6,7 @@
 
         </div>
 --%>
-        <h3>Перечень научно-технических работ</h3>
+        <h3>Перечень научно-технических работ {{pager.amntofrec}}</h3>
 		<p v-if="isadmin">{{namepre}}</p>
         <p v-show="isFilter">
            <span v-show="needYear">
@@ -14,6 +14,9 @@
            </span>
            <span v-show="needNPR">
                {{fioNprFilter}}
+           </span>
+           <span v-show="needDet">
+               {{nameDetFilter}}
            </span>
         </p>
         <table class="ui selectable celled striped very compact table">
@@ -135,23 +138,47 @@
 <%--
                         <div class="field" v-show="needPredp">
 --%>
-                    <div class="field">
-                        <div>
-                            <podrselector ref='podrslctr' v-bind:podrid  = "shifrPredp"
-                                          v-on:eselpodr  = "ePodrSelected"
-                                          v-on:enamepodr = "eNamePodr"></podrselector>
+                        <div class="field">
+                            <div>
+                                <podrselector ref='podrslctr' v-bind:podrid  = "shifrPredp"
+                                              v-on:eselpodr  = "ePodrSelected"
+                                              v-on:enamepodr = "eNamePodr"></podrselector>
 
 <%--
                         </div>
                         <div class="ui message">
 --%>
-                            <p v-cloak>{{namePodr}}</p>
-                        </div>
+                               <p v-cloak>{{namePodr}}</p>
+                            </div>
                         </div>
                         <div class="field" >
                             <div class="ui checkbox" id="cbNeedPredp">
                                 <input v-model="needPredp" class="hidden" type="checkbox">
                                 <label>Выбрать подразделение</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="inline fields">
+                        <label v-show="needDet">Вид работы</label>
+                        <div class="ui dropdown field" id="ddDet" v-show="needDet">
+                                <input name="shifrDet" type="hidden" v-model="shifrDet">
+                                <i class="dropdown icon"></i>
+                                <div class="default text">Не выбран вид работы</div>
+                                <div class="menu">
+                                    <div class="item" data-value="2">Научные статьи</div>
+                                    <div class="item" data-value="7">Публикации РИНЦ</div>
+                                    <div class="item" data-value="12">Публикации Web of Science</div>
+                                    <div class="item" data-value="14">Публикации SCOPUS</div>
+                                    <div class="item" data-value="37">Учебники и учебные пособия</div>
+                                    <div class="item" data-value="42">Патенты России</div>
+                                    <div class="item" data-value="65">Докторские диссертации</div>
+                                    <div class="item" data-value="66">Кандидатские диссертации</div>
+                                </div>
+                        </div>
+                        <div class="field">
+                            <div class="ui checkbox" id="cbNeedDet">
+                                <input v-model="needDet" class="hidden" type="checkbox">
+                                <label>Установить вид работы</label>
                             </div>
                         </div>
                     </div>
@@ -185,9 +212,10 @@
                     isnpr         :     false,
                     isadmin       :     false,
                     pager         : {
-                        pagesize     : 10,
-                        pageno       :  1,
-                        amntofpage   :  1,
+                        amntofrec    :  0 ,
+                        pagesize     : 10 ,
+                        pageno       :  1 ,
+                        amntofpage   :  1 ,
                         startvisiblepage    : 1,
                         amntofvisiblepages  : 5,
                         limitamntofvisiblepages  : 5,
@@ -198,7 +226,8 @@
                     currentSort     : 'auth'  ,
                     currentSortDir  : 'asc'   ,
                     currentSortCode : 1       ,
-                    fioNprFilter    : ''
+                    fioNprFilter    : ''      ,
+                    nameDetFilter   : ''
             };
 
         },
@@ -272,9 +301,25 @@
                     this.$root.ntrFilter.namePredp = v;
                 }
             },
+            needDet: {
+                get: function () {
+                    return this.$root.ntrFilter.needDet;
+                },
+                set: function (v) {
+                    this.$root.ntrFilter.needDet = v;
+                }
+            },
+            shifrDet: {
+                get: function () {
+                    return this.$root.ntrFilter.shifrDet;
+                },
+                set: function (v) {
+                    this.$root.ntrFilter.shifrDet = v;
+                }
+            },
             isFilter:function() {
                 var retVal=false;
-                if (this.needNPR || this.needYear) {
+                if (this.needNPR || this.needYear || this.needDet) {
                     retVal=true;
                 }
                 return retVal;
@@ -292,7 +337,18 @@
                 }
                 this.shifrNpr=value;
             },
+            addShifrDet: function() {
+                var id=$('#ddDet').dropdown("get value");
+                if (!id || (id<1)) return;
+                var name=$('#ddDet').dropdown("get text");
 
+                var value = id;
+                if (!value) {
+                    return
+                }
+                this.shifrDet      = value;
+                this.nameDetFilter = name?name:"";
+            },
             setAuthorsDD:function() {
                 var l=$('#authorddb').length;
 //                alertify.alert('inside init setAuthorsDD l='+l);
@@ -314,7 +370,10 @@
 //                    }
                 }
             },
-
+            setDetDropDown:function() {
+              $("#ddDet")
+               .dropdown();
+            },
             setEShowModal : function(newVal,newRec) {
 //                console.log('ntrtable: inside setEShowModal');
                 this.showModal=newVal;
@@ -471,8 +530,15 @@
                    this.addAuthor();
 //                alertify.alert("inside-2 setFilter. shifrNpr="+this.shifrNpr);
 //                console.log("inside-2 setFilter. shifrNpr="+this.shifrNpr);
+                if (this.needDet)
+                   this.addShifrDet();
                 var needRefresh=false;
-                if (this.needYear || (this.needNPR && this.shifrNpr>0))
+                if (this.needYear
+                        ||
+                        (this.needNPR && this.shifrNpr>0)
+                        ||
+                        (this.needDet && this.shifrDet>0)
+                   )
                     needRefresh=true;
                 if (this.needNPR && this.shifrNpr>0) {
 //                    alertify.alert("needRefresh NPR shifrNpr="+this.shifrNpr);
@@ -501,6 +567,10 @@
                 }
                 if (this.needNPR) {
                     this.needNPR=false;
+                    needRefresh=true;
+                }
+                if (this.needDet) {
+                    this.needDet=false;
                     needRefresh=true;
                 }
                 if (needRefresh) {
@@ -624,12 +694,17 @@
                 var uri8     = uri7+"/"+this.pager.pagesize  ;
                 var uri9     = uri8+"/"+this.currentSortCode ;
                 var shifridnprfilter = 0 ;
-                if (this.needNPR) {
+                if (this.needNPR && this.shifrNpr>0) {
                    shifridnprfilter = this.shifrNpr;
                 }
                 var uri10    = uri9   + "/" + shifridnprfilter ;
+                var shifriddetfilter = 0 ;
+                if (this.needDet && this.shifrDet>0) {
+                    shifriddetfilter = this.shifrDet;
+                }
+                var uri11    = uri10   + "/" + shifriddetfilter ;
 //                var uri11    = uri10  + "/0"; // not need count
-                var uri      = uri10  ;
+                var uri      = uri11  ;
                 var vm       = this  ;
                 var finished = false ;
 //                alertify.alert("shifritem="+shifritem+" pageno="+this.pager.pageno+" pagesize="+this.pager.pagesize+" currentSordCode="+this.currentSortCode+" url="+uri);
@@ -686,15 +761,20 @@
                     shifridnprfilter=this.shifrNpr;
                 }
                 var uri6=uri5+"/"+shifridnprfilter;
-                var uri=uri6;
+                var shifriddetfilter=0;
+                if (this.needDet) {
+                    shifriddetfilter=this.shifrDet;
+                }
+                var uri7=uri6+"/"+shifriddetfilter;
+                var uri=uri7;
                 var vm       = this;
                 var finished = false;
                 axios.get(uri, {
                 })
                         .then(function (response) {
                             finished=true;
-                            vm.pager.amntofpage=response.data;
-                            var ps=Math.floor (vm.pager.amntofpage / vm.pager.pagesize);
+                            vm.pager.amntofrec=response.data;
+                            var ps=Math.floor (vm.pager.amntofrec / vm.pager.pagesize);
                             if ((vm.pager.amntofpage % vm.pager.pagesize)>0) {
                                 ps++;
                             }
@@ -1011,8 +1091,12 @@
                 $('#cbNeedPredp')
                         .checkbox()
                 ;
+                $('#cbNeedDet')
+                        .checkbox()
+                ;
 
                 vm.setAuthorsDD();
+                vm.setDetDropDown();
             });
         },
 <%--

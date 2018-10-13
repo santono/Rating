@@ -1,8 +1,4 @@
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-<%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <%@ page contentType="text/html;charset=UTF-8" pageEncoding="UTF-8" language="java" %>
-<%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <template id="template-dolg-table">
     <div>
         <div class="ui breadcrumb" id="breadcrumbh">
@@ -139,11 +135,6 @@
                 this.currentSort = s;
             },
             getDolgList:function() {
-<%--
-                <c:url value = "/util/dolgs" var="uri2" />
-                var uri3     = "${uri2}";
-                var uri      = uri3;
---%>
                 var uri      = this.$root.rootPath+"/util/dolgs";
                 var vm       = this;
                 var finished = false;

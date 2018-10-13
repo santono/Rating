@@ -13,7 +13,9 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import rating.dto.PodrEntityDTO;
+import rating.dto.PokazBarByYearDTO;
 import rating.dto.PokazEntityDTO;
+import rating.dto.RatingNprRecDTO;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -46,7 +48,11 @@ public class PodrDAOJDBCImpl implements PodrDAO {
             "where id=?";
     private static final String SQL_SELECT_POKAZ_FOR_PREDP="select a.id,a.lineno,a.name,valverified, valnotverified from public.tb_pokaz a,fn_getpokazforpredp(a.id,?,?)";
 
-    private static final String SQL_SELECT_POKAZS_FOR_PREDP="select p.id id,p.lineno lineno,p.name nam,coalesce(f.valverified,0) valverified from tb_pokaz p left outer join fn_getpokazsforpredp(?,?) f on p.id=f.id_v order by p.lineno";
+    private static final String SQL_SELECT_POKAZS_FOR_PREDP="select p.id id,p.lineno lineno,p.name nam,coalesce(f.valverified,0) valverified, coalesce(f.countntr,0) countntr from tb_pokaz p left outer join fn_getpokazsforpredp(?,?) f on p.id=f.id_v order by p.lineno";
+
+    private static final String SQL_SELECT_RATING_FOR_PREDP="select lineno,fio,cnt from fn_user_rating(?,?,?) where cnt>0";
+
+    private static final String SQL_SELECT_POKAZ_BAR_SERIE_FOR_PREDP="select y_p,cnt_p from fn_diapokazforpredp(?,?,?,?)";
 
     @Override
     @Transactional(readOnly = true)
@@ -224,12 +230,43 @@ public class PodrDAOJDBCImpl implements PodrDAO {
                 pe.setName(rs.getString("nam"));
                 pe.setAmnt(rs.getDouble("valverified"));
                 pe.setLineno(rs.getInt("lineno"));
+                pe.setCountntr(rs.getInt("countntr"));
 //                pe.setAmntn(rs.getDouble("valnotverified"));
                 pe.setAmntn(0);
                 return pe;
             }
         };
         return jdbcTemplate.query(SQL_SELECT_POKAZS_FOR_PREDP, mapper, new Object[]{wantedId,wantedY});
+
+    }
+    @Override
+    @Transactional(readOnly = true)
+    public List<RatingNprRecDTO> getRatingAllForPre(int wantedId, int yfr,int yto) {
+        RowMapper<RatingNprRecDTO> mapper = new RowMapper<RatingNprRecDTO>() {
+            public RatingNprRecDTO mapRow(ResultSet rs, int rowNum) throws SQLException {
+                RatingNprRecDTO re = new RatingNprRecDTO();
+                re.setFio(rs.getString("fio"));
+                re.setAmnt(rs.getInt("cnt"));
+                re.setLineno(rs.getInt("lineno"));
+                re.setNamePre("");
+                re.setAmntProc(0.0);
+                return re;
+            }
+        };
+        return jdbcTemplate.query(SQL_SELECT_RATING_FOR_PREDP, mapper, new Object[]{wantedId,yfr,yto});
+
+    }
+    @Override
+    @Transactional(readOnly = true)
+    public List<Integer> getPokazBarSerie(int pokazid,int shifrpre,int yfr,int yto) {
+        RowMapper<Integer> mapper = new RowMapper<Integer>() {
+            public Integer mapRow(ResultSet rs, int rowNum) throws SQLException {
+                int ri=rs.getInt("cnt_p");
+                Integer re = new Integer(ri);
+                return re;
+            }
+        };
+        return jdbcTemplate.query(SQL_SELECT_POKAZ_BAR_SERIE_FOR_PREDP, mapper, new Object[]{pokazid,shifrpre,yfr,yto});
 
     }
 }
