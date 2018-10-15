@@ -32,5 +32,5 @@ public interface PodrDAO {
 
     public List<RatingNprRecDTO> getRatingAllForPre(int wantedId, int yfr,int yto);
 
-    public List<Integer> getPokazBarSerie(int pokazid,int shifrpre,int yfr,int yto);
+    public List<Integer> getPokazBarSerie(int pokazid,int shifrpre,int yfr,int yto,int shifrnpr);
 }

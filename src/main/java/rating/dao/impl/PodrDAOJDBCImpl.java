@@ -52,7 +52,7 @@ public class PodrDAOJDBCImpl implements PodrDAO {
 
     private static final String SQL_SELECT_RATING_FOR_PREDP="select lineno,fio,cnt from fn_user_rating(?,?,?) where cnt>0";
 
-    private static final String SQL_SELECT_POKAZ_BAR_SERIE_FOR_PREDP="select y_p,cnt_p from fn_diapokazforpredp(?,?,?,?)";
+    private static final String SQL_SELECT_POKAZ_BAR_SERIE_FOR_PREDP="select y_p,cnt_p from fn_diapokazforpredp(?,?,?,?,?)";
 
     @Override
     @Transactional(readOnly = true)
@@ -258,7 +258,7 @@ public class PodrDAOJDBCImpl implements PodrDAO {
     }
     @Override
     @Transactional(readOnly = true)
-    public List<Integer> getPokazBarSerie(int pokazid,int shifrpre,int yfr,int yto) {
+    public List<Integer> getPokazBarSerie(int pokazid,int shifrpre,int yfr,int yto,int shifrnpr) {
         RowMapper<Integer> mapper = new RowMapper<Integer>() {
             public Integer mapRow(ResultSet rs, int rowNum) throws SQLException {
                 int ri=rs.getInt("cnt_p");
@@ -266,7 +266,7 @@ public class PodrDAOJDBCImpl implements PodrDAO {
                 return re;
             }
         };
-        return jdbcTemplate.query(SQL_SELECT_POKAZ_BAR_SERIE_FOR_PREDP, mapper, new Object[]{pokazid,shifrpre,yfr,yto});
+        return jdbcTemplate.query(SQL_SELECT_POKAZ_BAR_SERIE_FOR_PREDP, mapper, new Object[]{pokazid,shifrpre,yfr,yto,shifrnpr});
 
     }
 }

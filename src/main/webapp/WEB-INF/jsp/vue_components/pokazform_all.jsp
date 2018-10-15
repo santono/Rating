@@ -1,8 +1,4 @@
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-<%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <%@ page contentType="text/html;charset=UTF-8" pageEncoding="UTF-8" language="java" %>
-<%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <template id="template-pokaz-form">
     <div class="ui first coupled modal" v-show="show" id="modalpokaz">
         <i class="close icon"></i>
@@ -140,7 +136,7 @@
                                 }
                             })
                             .catch (function(error){
-                                vm.$notify("alert", "Ошибка сохранения записи. "+error, "error");
+                                alertify.alert("Ошибка сохранения записи. "+error);
                     });
             },
             deleteRec: function(rec){
@@ -195,7 +191,7 @@
                     )
                 }
                } else {
-                  alert('in show this.control is undefined');
+                  alertify.alert('in show this.control is undefined');
                }
             }
         },

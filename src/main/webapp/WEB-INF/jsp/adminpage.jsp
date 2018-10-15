@@ -454,18 +454,23 @@
 <script src="${vs_notify_js_url}"></script>
 <script src="${vue_datepicker_js_url}"></script>
 
-<%@ include file="vue_components/univrow_all.jsp"%>
-<%@ include file="vue_components/univform_all.jsp"%>
-<%@ include file="vue_components/univtable_all.jsp"%>
 
-<%@ include file="vue_components/podrsel_all.jsp"%>
-<%@ include file="vue_components/userrow_all.jsp"%>
-<%@ include file="vue_components/userform_all.jsp"%>
-<%@ include file="vue_components/userstable_all.jsp"%>
+<jsp:include page="vue_components/podrsel_all.jsp"    />
 
-<%@ include file="vue_components/pokazrow_all.jsp"%>
-<%@ include file="vue_components/pokazform_all.jsp"%>
-<%@ include file="vue_components/pokaztable_all.jsp"%>
+<jsp:include page="vue_components/filter_all.jsp" />
+
+
+<jsp:include page="vue_components/univrow_all.jsp"   />
+<jsp:include page="vue_components/univform_all.jsp"  />
+<jsp:include page="vue_components/univtable_all.jsp" />
+
+<jsp:include page="vue_components/userrow_all.jsp"    />
+<jsp:include page="vue_components/userform_all.jsp"   />
+<jsp:include page="vue_components/userstable_all.jsp" />
+
+<jsp:include page="vue_components/pokazrow_all.jsp"   />
+<jsp:include page="vue_components/pokazform_all.jsp"  />
+<jsp:include page="vue_components/pokaztable_all.jsp" />
 <%--
 <%@ include file="vue_components/dolgrow_all.jsp"%>
 <%@ include file="vue_components/dolgform_all.jsp"%>

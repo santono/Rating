@@ -1696,15 +1696,17 @@ public class UtilController {
         return ratingList;
     }
 
-    @RequestMapping(value="/diapokcolumn/{shifrpre}/{yfrom}/{yto}",method = RequestMethod.GET,produces = "application/json")
+    @RequestMapping(value="/diapokcolumn/{shifrpre}/{yfrom}/{yto}/{shifrnpr}/{shifrdet}",method = RequestMethod.GET,produces = "application/json")
     @ResponseBody
     public  PokazBarByYearDTO getPokazBarByYearForPre(@PathVariable long shifrpre,
                                                       @PathVariable int yfrom,
-                                                      @PathVariable int yto) {
+                                                      @PathVariable int yto,
+                                                      @PathVariable int shifrnpr,
+                                                      @PathVariable int shifrdet) {
         PokazBarByYearDTO pb;
 //       int y=Util.getCurrentYear();
-        pb=podrService.getPokazBarByYearForPre((int) shifrpre,yfrom,yto);
-        logger.debug("Try load diapokcolumn. ShifrPre="+shifrpre);
+        pb=podrService.getPokazBarByYearForPre((int) shifrpre,yfrom,yto,shifrnpr,shifrdet);
+        logger.debug("Try load diapokcolumn. ShifrPre="+shifrpre+" yfrom="+yfrom+" yto="+yto+" shifrnpr="+shifrnpr+" shifrdet="+shifrdet);
         return pb;
     }
 

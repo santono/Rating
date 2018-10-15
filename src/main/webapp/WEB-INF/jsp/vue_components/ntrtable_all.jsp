@@ -87,7 +87,7 @@
                  v-on:edelrec          = "eDelRec" >
 
         </ntrform>
-
+<%--
         <div class="ui large modal" id="filtermodal">
             <div class="ui header">
                 Фильтр научных работ
@@ -112,9 +112,6 @@
                     </div>
 
                     <div v-if="isadmin" class="inline fields">
-<%--
-                        <div v-show="needNPR" class="ui search selection dropdown twelve wide field" id="authorddb">
---%>
                         <div v-show="needNPR" class="ui search selection dropdown field " id="authorddb">
                             <input v-on:blur="addAuthor(author)"
                                    v-on:keyup.enter="addAuthor(author)"
@@ -123,9 +120,6 @@
                             <div class="default text">Автор</div>
                             <input type="text" class="search">
                         </div>
-<%--
-                        <div class="four wide field" >
---%>
                         <div class="field" >
                             <div class="ui checkbox" id="cbNeedNPR">
                                 <input v-model="needNPR" class="hidden" type="checkbox">
@@ -135,19 +129,12 @@
                     </div>
 
                     <div v-if="isadmin" class="inline fields">
-<%--
-                        <div class="field" v-show="needPredp">
---%>
                         <div class="field">
                             <div>
                                 <podrselector ref='podrslctr' v-bind:podrid  = "shifrPredp"
                                               v-on:eselpodr  = "ePodrSelected"
                                               v-on:enamepodr = "eNamePodr"></podrselector>
 
-<%--
-                        </div>
-                        <div class="ui message">
---%>
                                <p v-cloak>{{namePodr}}</p>
                             </div>
                         </div>
@@ -193,7 +180,12 @@
                  <div class="ui negative button">Сбросить фильтр</div>
             </div>
         </div>
-        
+--%>
+        <filterform ref="filter"
+                    v-on:eresetfilter = "reSetFilter"
+                    v-on:esetfilter = "setFilter"
+
+                ></filterform>
     </div>
 </template>
 <script>
@@ -234,7 +226,8 @@
         components: {
             'ntrrow'       : ntrrow  ,
             'ntrform'      : ntrform ,
-            'podrselector' : podrselector
+            'podrselector' : podrselector,
+            'filterform'   : filterform
         },
         computed : {
             yearFr:{
@@ -326,6 +319,7 @@
             }
         },
         methods: {
+<%--
             addAuthor: function () {
                 var id=$('#authorddb').dropdown("get value");
 //                alertify.alert('id='+id);
@@ -349,31 +343,36 @@
                 this.shifrDet      = value;
                 this.nameDetFilter = name?name:"";
             },
-            setAuthorsDD:function() {
-                var l=$('#authorddb').length;
-//                alertify.alert('inside init setAuthorsDD l='+l);
-                if ($('#authorddb').length>0) {
-                    var uri = this.$root.rootPath
-                            + "/util/semanticui/dropdown/tags/{query}";
-//                    alertify.alert('inside setAuthorsDD ');
-                    $('#authorddb').dropdown({
-                        apiSettings: {
-                            // this url parses query server side and returns filtered results
-                            url: uri
-                        }
-                    })
-                    ;
-//                    if ($('#cb').length>0) {
-//                        $('#cb')
-//                                .checkbox()
-//                        ;
-//                    }
-                }
-            },
-            setDetDropDown:function() {
-              $("#ddDet")
-               .dropdown();
-            },
+--%>
+<%--
+
+                        setAuthorsDD:function() {
+                            var l=$('#authorddb').length;
+            //                alertify.alert('inside init setAuthorsDD l='+l);
+                            if ($('#authorddb').length>0) {
+                                var uri = this.$root.rootPath
+                                        + "/util/semanticui/dropdown/tags/{query}";
+            //                    alertify.alert('inside setAuthorsDD ');
+                                $('#authorddb').dropdown({
+                                    apiSettings: {
+                                        // this url parses query server side and returns filtered results
+                                        url: uri
+                                    }
+                                })
+                                ;
+            //                    if ($('#cb').length>0) {
+            //                        $('#cb')
+            //                                .checkbox()
+            //                        ;
+            //                    }
+                            }
+                        },
+                        setDetDropDown:function() {
+                          $("#ddDet")
+                           .dropdown();
+                        },
+            --%>
+
             setEShowModal : function(newVal,newRec) {
 //                console.log('ntrtable: inside setEShowModal');
                 this.showModal=newVal;
@@ -523,15 +522,7 @@
                 if (ntr1.lineno<ntr2.lineno) retVal=-1;
                 return retVal;
             },
-            setFilter:function() {
-//                alertify.alert("inside-1 setFilter. needNPR="+this.needNPR+" shifrNpr="+this.shifrNpr);
-//                console.log("inside-1 setFilter. needNpr="+this.needNPR+" shifrNpr="+this.shifrNpr);
-                if (this.needNPR)
-                   this.addAuthor();
-//                alertify.alert("inside-2 setFilter. shifrNpr="+this.shifrNpr);
-//                console.log("inside-2 setFilter. shifrNpr="+this.shifrNpr);
-                if (this.needDet)
-                   this.addShifrDet();
+            setFilter:function(nameDetFilter,fioNprFilter) {
                 var needRefresh=false;
                 if (this.needYear
                         ||
@@ -541,8 +532,10 @@
                    )
                     needRefresh=true;
                 if (this.needNPR && this.shifrNpr>0) {
-//                    alertify.alert("needRefresh NPR shifrNpr="+this.shifrNpr);
-                    this.getFioNPR(this.shifrNpr);
+                    this.fioNprFilter=fioNprFilter;
+                }
+                if (this.needDet && this.shifrDet>0) {
+                    this.nameDetFilter=nameDetFilter;
                 }
                 if (needRefresh) {
                     this.pager.pageno=1;
@@ -584,21 +577,7 @@
                 }
             },
             showfilter:function() {
-              var vm=this;
-              $('#filtermodal')
-                .modal({
-                  closable  : true,
-                  onDeny    : function(){
-//                       window.alert('Wait not yet!');
-//                       return true;
-                        vm.reSetFilter();
-                  },
-                  onApprove : function() {
-                              vm.setFilter();
-                  }
-                })
-               .modal('show')
-              ;
+              this.$refs.filter.showfilter();
             },
             ePodrSelected:function(id) {
                 if (id && id>0 && this.shifrPredp!=id) {
@@ -621,46 +600,6 @@
             getNtrList:function(mode,shifritem) {
                 this.getNtrPageList(mode,shifritem);
                 return;
-<%--
-                var uri2=this.$root.rootPath+"/util";
-                var uri3;
-                if (!mode || mode==0) {
-                    uri3     = uri2+"/ntrs";
-                }
-                else {
-                    uri3     = uri2+"/ntrsnpr";
-                }
-                var uri4     = uri3+"/"+shifritem;
-                var uri      = uri4;
-                var vm       = this;
-                var finished = false;
-                vm.$nextTick(function () {
-                    window.app.isLoadingContent=true;
-                });
-
-                axios.get(uri, {
-                })
-                        .then(function (response) {
-                            finished=true;
-                            vm.ntrlist=response.data;
-							vm.performSortingNtr();
-                            vm.$nextTick(function () {
-                               window.app.isLoadingContent=false;
-                            });
-//                            for(var i=0;i<vt.ntrlist.length;i++)
-//                               if (vt.ntrlist[i].id==4)
-//                                  console.log('ntr 4='+JSON.stringify(vt.ntrlist[i]));
-//                            alert('shifrpre='+vt.shifrpre+' amnt of user '+vt.userslist.length);
-                        })
-
-                        .catch(function (error) {
-                            vm.$nextTick(function () {
-                               window.app.isLoadingContent=false;
-                            });
-                    alertify.alert("Ошибка",'error reading ntrlist='+error);
-                          finished=true;
-                });
---%>
             },
             getNtrPageList:function(mode,shifritem) { // 0 - predp 1 - NPR
                 var uri2=this.$root.rootPath+"/util";
@@ -668,13 +607,6 @@
                 kind=mode?mode:0;
                 if (kind>1) kind=0;
                 if (kind<0) kind=0;
-//                var uri3;
-//                if (!mode || mode==0) {
-//                    uri3     = uri2+"/ntrs";
-//                }
-//                else {
-//                    uri3     = uri2+"/ntrsnpr";
-//                }
                 var uri3     = uri2+"/ntrs/"+kind;
                 var uri4     = uri3+"/"+shifritem;
                 var yfr      = 1960;
@@ -703,12 +635,9 @@
                     shifriddetfilter = this.shifrDet;
                 }
                 var uri11    = uri10   + "/" + shifriddetfilter ;
-//                var uri11    = uri10  + "/0"; // not need count
                 var uri      = uri11  ;
                 var vm       = this  ;
                 var finished = false ;
-//                alertify.alert("shifritem="+shifritem+" pageno="+this.pager.pageno+" pagesize="+this.pager.pagesize+" currentSordCode="+this.currentSortCode+" url="+uri);
-//                return;
                 vm.$nextTick(function () {
                     window.app.isLoadingContent=true;
                 });
@@ -718,15 +647,10 @@
                         .then(function (response) {
                             finished=true;
                             vm.ntrlist=response.data;
-//                            vm.performSortingNtr();
                             vm.getAmntOfPages(mode,shifritem);
                             vm.$nextTick(function () {
                                 window.app.isLoadingContent=false;
                             });
-//                            for(var i=0;i<vt.ntrlist.length;i++)
-//                               if (vt.ntrlist[i].id==4)
-//                                  console.log('ntr 4='+JSON.stringify(vt.ntrlist[i]));
-//                            alert('shifrpre='+vt.shifrpre+' amnt of user '+vt.userslist.length);
                         })
 
                         .catch(function (error) {
@@ -779,9 +703,7 @@
                                 ps++;
                             }
                             vm.pager.amntofpage=ps;
-      //                      alertify.alert(" recs="+response.data+" aop="+vm.pager.amntofpage+" ps="+vm.pager.pagesize);
                             vm.setTableFooter();
-//                            alert('shifrpre='+vt.shifrpre+' amnt of user '+vt.userslist.length);
                         })
 
                         .catch(function (error) {
@@ -849,7 +771,6 @@
                             authorsname=response.data[0].name;
                             if (authorsname=='Empty')
                                 authorsname="";
-//                            console.log("inside success getaulist for ntr "+authorsname);
                             vm.finishEShowModalForPokaz(authorsname);
                         })
                         .catch(function (error) {
@@ -874,29 +795,12 @@
                             pokazsname=response.data[0].name;
                             if (pokazsname=='Empty')
                                 pokazsname="";
-//                            console.log("inside success getaulist for ntr "+authorsname);
                             vm.finishEShowModal(pokazsname);
                         })
                         .catch(function (error) {
                     alertify.error("getPokazListForNtr error="+error)
                 });
 
-            },
-            getFioNPR: function(shifrid) {
-                var uri=this.$root.rootPath+"/util/user/fio/"+shifrid;
-                var vm=this;
-                axios.get(uri, {
-                })
-                        .then(function (response) {
-                            var rrec=response.data[0];
-                            vm.$nextTick(function () {
-                                vm.fioNprFilter=rrec.name;
-                            });
-                        })
-
-                        .catch(function (error) {
-                    alertify.alert("Ошибка","error getFioNPR=",error);
-                });
             },
 
             goPage:function(pageNo) {
@@ -925,8 +829,6 @@
                 this.goPage(wantedPage);
             },
             sortntr:function(s) {
-                //if s == current sort, reverse
-//                console.log('sortuser s='+s+' this.currentSort='+this.currentSort+' this.currentSortDir='+this.currentSortDir);
                 if(s === this.currentSort) {
                     this.currentSortDir = this.currentSortDir==='asc'?'desc':'asc';
                 }
@@ -998,18 +900,6 @@
 
             },
             setTableFooter:function() {
-                <%--
-                                if (this.pager.pageno<4)
-                                    this.pager.startvisiblepage=1;
-                                else
-                                    this.pager.startvisiblepage=this.pager.pageno-2;
-                                if (this.pager.amntofpage>4)
-                                    this.pager.amntofvisiblepages=5;
-                                else
-                                    this.pager.amntofvisiblepages=this.pager.amntofpage;
-                                if (this.startvisiblepage>1) this.pager.leftangle=true;
-                --%>
-//                console.log('setTableFooter: this.pager.amntofpage='+this.pager.amntofpage);
                 this.pager.pages=[];
                 this.pager.leftangle.visible   = false;
                 this.pager.leftangle.disabled  = true;
@@ -1019,7 +909,6 @@
                     return;
                 }
                 if (this.pager.amntofpage<this.pager.limitamntofvisiblepages) {
-//                    console.log('setTableFooter1: this.pager.amntofpage='+this.pager.amntofpage);
                     this.pager.leftangle.visible   = true  ;
                     this.pager.leftangle.disabled  = false ;
                     this.pager.rightangle.visible  = true  ;
@@ -1028,9 +917,6 @@
                     for (var i=0;i<this.pager.amntofvisiblepages;i++) {
                         this.pager.pages.push({page:i+1,disabled:i+1==this.pager.pageno?true:false});
                     }
-//                    console.log('setTableFooter2: ');
-//                    for (var i=0;i<this.pager.pages.length;i++)
-//                        console.log(JSON.stringify(this.pager.pages[i]));
                     return
                 }
                 if (this.pager.pageno>=(this.pager.amntofpage-this.pager.limitamntofvisiblepages+1)) {
@@ -1049,9 +935,6 @@
                     for (var i=0;i<this.pager.amntofvisiblepages;i++) {
                         this.pager.pages.push({page:this.pager.startvisiblepage+i,disabled:this.pager.startvisiblepage+i==this.pager.pageno?true:false});
                     }
-//                    console.log('setTableFooter2: ');
-//                    for (var i=0;i<this.pager.pages.length;i++)
-//                        console.log(JSON.stringify(this.pager.pages[i]));
                     return
                 }
                 var l=Math.floor(this.pager.limitamntofvisiblepages /2);
@@ -1082,6 +965,7 @@
                 var h = window.innerHeight;
                 $('#idtbodyntr').css('height',h);
                 $('#idtbodyntr').css('overflowY','scroll');
+<%--
                 $('#cbNeedYear')
                         .checkbox()
                 ;
@@ -1094,25 +978,12 @@
                 $('#cbNeedDet')
                         .checkbox()
                 ;
+--%>
 
-                vm.setAuthorsDD();
-                vm.setDetDropDown();
+//                vm.setAuthorsDD();
+//                vm.setDetDropDown();
             });
         },
-<%--
-        beforeRouteUpdate:function(to, from, next) {
-            var vm=this;
-            this.$nextTick(function () {
-                vm.shifrpre = this.$route.params.id;
-                vm.isnpr    = window.user.isNPR();
-                vm.isadmin  = window.user.isAdmin();
-                vm.getPreName();
-//                vm.getNtrList();
-                console.log('--- B A D --- setted isadmin in beforeRouteUpdate');
-            });
-            next();
-         },
---%>
         created: function() {
             this.shifrpre = this.$route.params.id;
             this.userid   = this.$route.params.iduser;

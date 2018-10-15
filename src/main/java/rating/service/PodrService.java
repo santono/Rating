@@ -5,6 +5,7 @@ import rating.domain.PodrEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import rating.dto.*;
+import rating.util.ShortFio;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -15,6 +16,10 @@ import java.util.List;
 public class PodrService {
     @Autowired
     private PodrDAO podrDAO;
+    @Autowired
+    private PokazService pokazService;
+    @Autowired
+    private UserService userService;
 
     public PodrEntity getById(final Integer wantedId) {
 //        logger.debug("Retrieving podra "+wantedId);
@@ -162,13 +167,20 @@ public class PodrService {
     public List<RatingNprRecDTO> getRatingAllForPre(final int wantedId,final int yfr,final int yto) {
         return podrDAO.getRatingAllForPre(wantedId, yfr,yto);
     }
-    public PokazBarByYearDTO getPokazBarByYearForPre(int wantedId, int yfr,int yto) {
+    public PokazBarByYearDTO getPokazBarByYearForPre(int wantedId, int yfr,int yto,int shifrnpr,int shifrdet) {
         String[] serNames={"Scopus","Web of Science","РИНЦ","Учебники","Патенты России"};
-        int[]  pokazs={14,12,7,37,42};
+        int wantedShifrDet = 7;
+        String fio=null;
+        if (shifrnpr>0)
+            fio= ShortFio.getShortFio(userService.getById(shifrnpr).getFam()+' '+userService.getById(shifrnpr).getNam()+' '+userService.getById(shifrnpr).getOtc());
+        if (shifrdet>0) 
+            wantedShifrDet=shifrdet;
+        String title=pokazService.getById(wantedShifrDet).getShortname();
+      //  int[]  pokazs={14,12,7,37,42};
         PokazBarByYearDTO diagram= new PokazBarByYearDTO();
         String pName=getById(wantedId).getName();
         diagram.setTitle(pName);
-        pName=""+yfr+" - "+yto;
+        pName=fio!=null?fio.trim():""+title+" "+yfr+" - "+yto;
         diagram.setSubtitle(pName);
         List<String> series=new ArrayList<String>();
         for (int i=yfr;i<=yto;i++) {
@@ -176,14 +188,16 @@ public class PodrService {
         }
         diagram.setCategories(series);
         List<ColumnDiagramSerieDTO> diaSeries=new ArrayList<ColumnDiagramSerieDTO>();
-        for (int i=0;i<pokazs.length;i++) {
+//        for (int i=0;i<pokazs.length;i++) {
             ColumnDiagramSerieDTO col=new ColumnDiagramSerieDTO();
             List<Integer> serie;
-            serie=podrDAO.getPokazBarSerie(pokazs[i],wantedId,yfr,yto);
-            col.setName(serNames[i]);
+            serie=podrDAO.getPokazBarSerie(wantedShifrDet,wantedId,yfr,yto,shifrnpr);
+//            col.setName(serNames[i]);
+//            col.setName(title);
+            col.setName(title);
             col.setData(serie);
             diaSeries.add(col);
-        }
+//        }
         diagram.setSeries(diaSeries);
         return diagram;
     };

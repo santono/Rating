@@ -1,9 +1,23 @@
 <%@ page contentType="text/html;charset=UTF-8" pageEncoding="UTF-8" language="java" %>
 <template id="template-diagram">
-    <div>
-        <div class="ui centered loader" v-bind:class="{active:isLoading}">Генерация диаграммы</div>
-        <div id="containerstu" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+    <div class="ui grid">
+       <div class="one wide column">
+          <div v-on:click="showfilter" class="compact mini ui icon button" data-tooltip="Установить фильтр записей" data-position="bottom left">
+              <i class="filter icon"></i>
+          </div>
+       </div>
+       <div class="eleven wide column">
+            <div class="ui centered loader" v-bind:class="{active:isLoading}">Генерация диаграммы</div>
+            <div id="containerstu" style="min-width: 310px; height: 600px; margin: 0 auto"></div>
+       </div>
+        <filterform ref="filter"
+                    v-on:eresetfilter = "reSetFilter"
+                    v-on:esetfilter   = "setFilter"
+
+                ></filterform>
+
     </div>
+
 </template>
 <script>
     var diagram=Vue.extend({
@@ -15,11 +29,104 @@
                 series        :  null,
                 shifrpre      :     1,
                 namepre       :    "",
-                isLoading     : false
+                isLoading     : false,
+                fioNprFilter  : '',
+                nameDetFilter : ''
             };
 
         },
         components: {
+            'filterform'   : filterform
+        },
+        computed: {
+            yearFr:{
+                get: function () {
+                    return this.$root.ntrFilter.yearFr;
+                },
+                set: function (v) {
+                    this.$root.ntrFilter.yearFr = v;
+                }
+            },
+            yearTo:{
+                get: function () {
+                    return this.$root.ntrFilter.yearTo;
+                },
+                set: function (v) {
+                    this.$root.ntrFilter.yearTo = v;
+                }
+            },
+            needYear:{
+                get: function () {
+                    return this.$root.ntrFilter.needYear;
+                },
+                set: function (v) {
+                    this.$root.ntrFilter.needYear = v;
+                }
+            },
+            shifrNpr:{
+                get: function () {
+                    return this.$root.ntrFilter.shifrNpr;
+                },
+                set: function (v) {
+                    this.$root.ntrFilter.shifrNpr = v;
+                }
+            },
+            needNPR:{
+                get: function () {
+                    return this.$root.ntrFilter.needNPR;
+                },
+                set: function (v) {
+                    this.$root.ntrFilter.needNPR = v;
+                }
+            },
+            shifrPredp:{
+                get: function () {
+                    return this.$root.ntrFilter.shifrPredp;
+                },
+                set: function (v) {
+                    this.$root.ntrFilter.shifrPredp = v;
+                }
+            },
+            needPredp:{
+                get: function () {
+                    return this.$root.ntrFilter.needPredp;
+                },
+                set: function (v) {
+                    this.$root.ntrFilter.needPredp = v;
+                }
+            },
+            namePodr:{
+                get: function () {
+                    return this.$root.ntrFilter.namePredp;
+                },
+                set: function (v) {
+                    this.$root.ntrFilter.namePredp = v;
+                }
+            },
+            needDet: {
+                get: function () {
+                    return this.$root.ntrFilter.needDet;
+                },
+                set: function (v) {
+                    this.$root.ntrFilter.needDet = v;
+                }
+            },
+            shifrDet: {
+                get: function () {
+                    return this.$root.ntrFilter.shifrDet;
+                },
+                set: function (v) {
+                    this.$root.ntrFilter.shifrDet = v;
+                }
+            },
+            isFilter:function() {
+                var retVal=false;
+                if (this.needNPR || this.needYear || this.needDet) {
+                    retVal=true;
+                }
+                return retVal;
+            }
+
         },
         methods: {
             makeBarByYear:function() {
@@ -55,15 +162,79 @@
                     series: this.series
                 });
             },
-            getHref:function() {
-                var url = this.$root.rootPath+"/util/reportRating/"+this.shifrpre+"/1960/2020";
-                return url;
+            setFilter:function(nameDetFilter,fioNprFilter) {
+                var needRefresh=false;
+                if (this.needYear
+                        ||
+                        (this.needNPR && this.shifrNpr>0)
+                        ||
+                        (this.needDet && this.shifrDet>0)
+                        )
+                    needRefresh=true;
+                if (this.needNPR && this.shifrNpr>0) {
+                    this.fioNprFilter=fioNprFilter;
+                }
+                if (this.needDet && this.shifrDet>0) {
+                    this.nameDetFilter=nameDetFilter;
+                }
+                if (needRefresh)
+                    this.getPokazBarByYear();
+
             },
+            reSetFilter:function() {
+                var needRefresh=false;
+                if (this.needYear) {
+                    this.needYear=false;
+                    needRefresh=true;
+                }
+                if (this.needNPR) {
+                    this.needNPR=false;
+                    needRefresh=true;
+                }
+                if (this.needDet) {
+                    this.needDet=false;
+                    needRefresh=true;
+                }
+                if (needRefresh)
+                    this.getPokazBarByYear();
+
+            },
+            showfilter:function() {
+                var vm=this;
+                this.$nextTick(function () {
+                     vm.$refs.filter.showfilter();
+                });
+            },
+            ePodrSelected:function(id) {
+                if (id && id>0 && this.shifrPredp!=id) {
+                    this.shifrPredp=id;
+                    this.$refs.podrslctr.getPodrCompoundName(id);
+                }
+
+
+            },
+            eNamePodr:function(nameVal) {
+                if (nameVal && _.isString(nameVal))
+                    this.namePodr=nameVal;
+            },
+
             getPokazBarByYear:function() {
                 var currentYear = new Date().getUTCFullYear();
                 var yto=currentYear;
                 var yfr=yto-4;
-                var uri = this.$root.rootPath+"/util/diapokcolumn/"+this.shifrpre+"/"+yfr+"/"+yto;
+                if (this.needYear && this.yearFr>1960 && (this.yearTo>=this.yearFr)) {
+                    yfr=this.yearFr;
+                    yto=this.yearTo;
+                }
+                var shifrNpr=0;
+                if (this.needNPR && this.shifrNpr>0) {
+                    shifrNpr=this.shifrNpr;
+                }
+                var shifrDet=0;
+                if (this.needDet && this.shifrDet) {
+                    shifrDet=this.shifrDet;
+                }
+                var uri = this.$root.rootPath+"/util/diapokcolumn/"+this.shifrpre+"/"+yfr+"/"+yto+"/"+shifrNpr+"/"+shifrDet;
 
                 var vm       = this;
                 vm.isLoading=true;
@@ -83,10 +254,11 @@
                         .catch(function (error) {
                     vm.isLoading=false;
 //                    $('#rpcontainer').dimmer('hide');
-                    alertify.alert('Ошибка','error reading ratinglist='+error);
+                    alertify.alert('Ошибка','error getPokazBarByYear='+error);
                 });
 
             },
+
             getPreName:function() {
                 var uri = this.$root.rootPath+"/util/univ/"+this.shifrpre;
                 var vm       = this;
