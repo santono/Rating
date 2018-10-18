@@ -165,18 +165,6 @@
             isLoadingContent:false,
             currentRoute: window.location.pathname,
             rootPath:'/r',
-            ntrFilter:{
-                needYear   : false,
-                yearFr     : 1970,
-                yearTo     : 2018,
-                needNPR    : false,
-                shifrNpr   : 0,
-                needPredp  : false,
-                shifrPredp : 0,
-                namePredp  : '',
-                needDet    : false,
-                shifrDet   : 0
-            }
         },
         components: {
             'univtable'  : univtable  ,

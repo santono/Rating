@@ -926,6 +926,7 @@ public class UtilController {
             ntrRecFromJSONDTO.setDataapproved(da);
             ntrRecFromJSONDTO.setIdRinc(ntrEntity.getIdRinc());
             ntrRecFromJSONDTO.setHrefRinc(ntrEntity.getHrefRinc());
+            ntrRecFromJSONDTO.setyPubl(ntrEntity.getyPubl());
         }
         return ntrRecFromJSONDTO;
     }

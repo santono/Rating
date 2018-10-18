@@ -66,6 +66,7 @@ public class NtrService {
                 ntrEntity.setShifrpre(shifrPre);
             ntrEntity.setIdRinc(ntrRecFromJSONDTO.getIdRinc());
             ntrEntity.setHrefRinc(ntrRecFromJSONDTO.getHrefRinc());
+            ntrEntity.setyPubl(ntrRecFromJSONDTO.getyPubl());
             saveRecord(ntrEntity);
             retVal=ntrEntity.getId();
         } else {
@@ -86,6 +87,7 @@ public class NtrService {
                ntrEntity.setShifrpre(shifrPre);
             ntrEntity.setIdRinc(ntrRecFromJSONDTO.getIdRinc());
             ntrEntity.setHrefRinc(ntrRecFromJSONDTO.getHrefRinc());
+            ntrEntity.setyPubl(ntrRecFromJSONDTO.getyPubl());
             saveRecord(ntrEntity);
             retVal=ntrEntity.getId();
         }
@@ -164,7 +166,7 @@ public class NtrService {
             ntrRecDTO.setParametry(ntrEntity.getParametry());
             ntrRecDTO.setAmntOfImages(getAmntOfImagesForNtr(ntrEntity.getId()));
             ntrRecDTO.setAmntOfDocs(getAmntOfDocsForNtr(ntrEntity.getId()));
-            ntrRecDTO.setFioapproved(ntrEntity.getFioapprove());
+            ntrRecDTO.setFioapproved(ntrEntity.getFioapprove()!=null?ntrEntity.getFioapprove():"");
             ntrRecDTO.setPokaz(ntrPokazService.getPokazForNtr(ntrEntity.getId()));
             s="";
             if (ntrEntity.getShifrpre()>0)  {
@@ -173,6 +175,7 @@ public class NtrService {
                     s = podrService.getById(ntrEntity.getShifrpre()).getName();
             }
             ntrRecDTO.setNamepre(s);
+            ntrRecDTO.setyPubl(ntrEntity.getyPubl());
             s="";
             s=ntrPokazService.getPokazForNtr(ntrEntity.getId());
             lrec.add(ntrRecDTO);

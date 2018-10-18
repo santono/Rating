@@ -24,8 +24,13 @@
         <td>
             <span>{{rowrec.pokaz}}</span>
         </td>
+<%--
         <td>
             <span v-if="rowrec.approved && rowrec.approved.trim().length>1" v-bind:data-tooltip="rowrec.fioapproved+' '+rowrec.dataapproved">{{rowrec.approved}}</span>
+        </td>
+--%>
+        <td>
+            <span v-if="rowrec.approved && rowrec.approved.trim().length>1" v-bind:data-tooltip="rowrec.fioapproved+' '+rowrec.dataapproved">{{rowrec.yPubl}}</span>
         </td>
         <td>
             <button class="compact mini ui button" v-on:click="swipeimages" v-if="rowrec.amntOfImages>0" data-tooltip="Просмотр изображений" data-position="top right"><i class="file image outline icon"></i></button>

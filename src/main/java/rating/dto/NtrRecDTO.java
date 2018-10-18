@@ -17,6 +17,7 @@ public class NtrRecDTO {
     private int amntOfImages;
     private int amntOfDocs;
     private int lineno;
+    private int yPubl;
 
 
     public String getNamepre() {
@@ -121,5 +122,13 @@ public class NtrRecDTO {
 
     public void setLineno(int lineno) {
         this.lineno = lineno;
+    }
+
+    public int getyPubl() {
+        return yPubl;
+    }
+
+    public void setyPubl(int yPubl) {
+        this.yPubl = yPubl;
     }
 }

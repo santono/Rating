@@ -1,11 +1,11 @@
 <%@ page contentType="text/html;charset=UTF-8" pageEncoding="UTF-8" language="java" %>
 <template id="template-filter-form">
-    <div class="ui large modal" id="filtermodal">
+    <div class="ui large modal filterclass" v-bind:id="filtermodalid">
         <div class="ui header">
             Фильтр научных работ
         </div>
         <div class="content">
-            <div class="ui form" id="filterform">
+            <div class="ui form" v-bind:id="filterformid">
                 <div class="inline fields">
                     <label v-show="needYear">C</label>
                     <div class="field" v-show="needYear">
@@ -16,7 +16,7 @@
                         <input v-model="yearTo" placeholder="Конечный год диапазона" type="number" step="1" max="2018" min="1960">
                     </div>
                     <div class="field">
-                        <div class="ui checkbox" id="cbNeedYear">
+                        <div class="ui checkbox" v-bind:id="cbneedyearid">
                             <input v-model="needYear" class="hidden" type="checkbox">
                             <label>Установить диапазон дат</label>
                         </div>
@@ -27,7 +27,7 @@
                     <%--
                                             <div v-show="needNPR" class="ui search selection dropdown twelve wide field" id="authorddb">
                     --%>
-                    <div v-show="needNPR" class="ui search selection dropdown field " id="authorddb">
+                    <div v-show="needNPR" class="ui search selection dropdown field " v-bind:id="authorddbid">
                         <input v-on:blur="addAuthor(author)"
                                v-on:keyup.enter="addAuthor(author)"
                                name="author" type="hidden" v-model="shifrNpr">
@@ -39,7 +39,7 @@
                                             <div class="four wide field" >
                     --%>
                     <div class="field" >
-                        <div class="ui checkbox" id="cbNeedNPR">
+                        <div class="ui checkbox" v-bind:id="cbneednprid">
                             <input v-model="needNPR" class="hidden" type="checkbox">
                             <label>Выбрать автора</label>
                         </div>
@@ -64,7 +64,7 @@
                         </div>
                     </div>
                     <div class="field" >
-                        <div class="ui checkbox" id="cbNeedPredp">
+                        <div class="ui checkbox" v-bind:id="cbneedpredpid">
                             <input v-model="needPredp" class="hidden" type="checkbox">
                             <label>Выбрать подразделение</label>
                         </div>
@@ -72,7 +72,7 @@
                 </div>
                 <div class="inline fields">
                     <label v-show="needDet">Вид работы</label>
-                    <div class="ui dropdown field" id="ddDet" v-show="needDet">
+                    <div class="ui dropdown field" v-bind:id="dddetid" v-show="needDet">
                         <input name="shifrDet" type="hidden" v-model="shifrDet">
                         <i class="dropdown icon"></i>
                         <div class="default text">Не выбран вид работы</div>
@@ -88,7 +88,7 @@
                         </div>
                     </div>
                     <div class="field">
-                        <div class="ui checkbox" id="cbNeedDet">
+                        <div class="ui checkbox" v-bind:id="cbneeddetid">
                             <input v-model="needDet" class="hidden" type="checkbox">
                             <label>Установить вид работы</label>
                         </div>
@@ -108,11 +108,13 @@
 <script>
     var filterform=Vue.extend({
         template: '#template-filter-form',
+        props : {
+            propid:String
+        },
         data:function() {
             return {
                 nameDetFilter : '' ,
-                fioNprFilter  : '' ,
-                initialized   : false
+                fioNprFilter  : ''
             }
         },
         components: {
@@ -142,7 +144,8 @@
             showfilter:function() {
                 var vm=this;
                 this.$nextTick(function() {
-                    $('#filtermodal')
+                    var namefilter=this.filtermodalid;
+                    $('#'+namefilter)
                            .modal({
                                closable  : true,
                                onDeny    : function(){
@@ -191,7 +194,8 @@
                     this.namePodr=nameVal;
             },
             addAuthor: function () {
-                var id=$('#authorddb').dropdown("get value");
+                var nameauthddb=this.authorddbid;
+                var id=$('#'+nameauthddb).dropdown("get value");
 //                alertify.alert('id='+id);
                 if (!id || (id<1)) return;
 
@@ -202,9 +206,10 @@
                 this.shifrNpr=value;
             },
             addShifrDet: function() {
-                var id=$('#ddDet').dropdown("get value");
+                var namedetddb=this.dddetid;
+                var id=$('#'+namedetddb).dropdown("get value");
                 if (!id || (id<1)) return;
-                var name=$('#ddDet').dropdown("get text");
+                var name=$('#'+namedetddb).dropdown("get text");
 
                 var value = id;
                 if (!value) {
@@ -215,7 +220,9 @@
             },
 
             setAuthorsDD:function() {
-                var l=$('#authorddb').length;
+                var nameauthddb=this.authorddbid;
+//                var l=$('#authorddb').length;
+                var l=$('#'+nameauthddb).length;
 //                alertify.alert('inside init setAuthorsDD l='+l);
 //                console.log('inside init setAuthorsDD l='+l);
                 if (l>0) {
@@ -223,7 +230,8 @@
 //                    console.log('inside setAuthorsDD ');
                     var uri = this.$root.rootPath
                             + "/util/semanticui/dropdown/tags/{query}";
-                    $('#authorddb').dropdown({
+//                    $('#authorddb').dropdown({
+                    $('#'+nameauthddb).dropdown({
                         apiSettings: {
                             // this url parses query server side and returns filtered results
                             url: uri
@@ -238,10 +246,13 @@
                 }
             },
             setDetDropDown:function() {
-                var l=$("#ddDet").length;
+                var namedddet=this.dddetid;
+//                var l=$("#ddDet").length;
+                var l=$("#"+namedddet).length;
 //                alertify.alert('inside setDetDropDown.l='+l);
 //                console.log('inside setDetDropDown.l='+l);
-                $("#ddDet")
+//                $("#ddDet")
+                $("#"+namedddet)
                         .dropdown();
             },
             getFioNPR: function(shifrid) {
@@ -262,6 +273,46 @@
             }
         },
         computed:{
+            filtermodalid:function() {
+                var retval;
+                retval="filtermodal"+this.propid;
+                return retval;
+            },
+            filterformid:function() {
+                var retval;
+                retval="filter"+this.propid;
+                return retval;
+            },
+            cbneedyearid:function() {
+                var retval;
+                retval="cbNeedYear"+this.propid;
+                return retval;
+            },
+            cbneednprid:function() {
+                var retval;
+                retval="cbNeedNpr"+this.propid;
+                return retval;
+            },
+            cbneedpredpid:function() {
+                var retval;
+                retval="cbNeedPredp"+this.propid;
+                return retval;
+            },
+            cbneeddetid:function() {
+                var retval;
+                retval="cbNeedDet"+this.propid;
+                return retval;
+            },
+            authorddbid:function() {
+                var retval;
+                retval="authorddb"+this.propid;
+                return retval;
+            },
+            dddetid:function() {
+                var retval;
+                retval="dddet"+this.propid;
+                return retval;
+            },
             isadmin:function() {
                 return this.$root.isadmin;
             },
@@ -270,82 +321,82 @@
             },
             yearFr:{
                 get: function () {
-                    return this.$root.ntrFilter.yearFr;
+                    return this.$parent.ntrFilter.yearFr;
                 },
                 set: function (v) {
-                    this.$root.ntrFilter.yearFr = v;
+                    this.$parent.ntrFilter.yearFr = v;
                 }
             },
             yearTo:{
                 get: function () {
-                    return this.$root.ntrFilter.yearTo;
+                    return this.$parent.ntrFilter.yearTo;
                 },
                 set: function (v) {
-                    this.$root.ntrFilter.yearTo = v;
+                    this.$parent.ntrFilter.yearTo = v;
                 }
             },
             needYear:{
                 get: function () {
-                    return this.$root.ntrFilter.needYear;
+                    return this.$parent.ntrFilter.needYear;
                 },
                 set: function (v) {
-                    this.$root.ntrFilter.needYear = v;
+                    this.$parent.ntrFilter.needYear = v;
                 }
             },
             shifrNpr:{
                 get: function () {
-                    return this.$root.ntrFilter.shifrNpr;
+                    return this.$parent.ntrFilter.shifrNpr;
                 },
                 set: function (v) {
-                    this.$root.ntrFilter.shifrNpr = v;
+                    this.$parent.ntrFilter.shifrNpr = v;
                 }
             },
             needNPR:{
                 get: function () {
-                    return this.$root.ntrFilter.needNPR;
+                    return this.$parent.ntrFilter.needNPR;
                 },
                 set: function (v) {
-                    this.$root.ntrFilter.needNPR = v;
+                    this.$parent.ntrFilter.needNPR = v;
                 }
             },
             shifrPredp:{
                 get: function () {
-                    return this.$root.ntrFilter.shifrPredp;
+                    return this.$parent.ntrFilter.shifrPredp;
                 },
                 set: function (v) {
-                    this.$root.ntrFilter.shifrPredp = v;
+                    this.$parent.ntrFilter.shifrPredp = v;
                 }
             },
             needPredp:{
                 get: function () {
-                    return this.$root.ntrFilter.needPredp;
+                    return this.$parent.ntrFilter.needPredp;
                 },
                 set: function (v) {
-                    this.$root.ntrFilter.needPredp = v;
+                    this.$parent.ntrFilter.needPredp = v;
                 }
             },
             namePodr:{
                 get: function () {
-                    return this.$root.ntrFilter.namePredp;
+                    return this.$parent.ntrFilter.namePredp;
                 },
                 set: function (v) {
-                    this.$root.ntrFilter.namePredp = v;
+                    this.$parent.ntrFilter.namePredp = v;
                 }
             },
             needDet: {
                 get: function () {
-                    return this.$root.ntrFilter.needDet;
+                    return this.$parent.ntrFilter.needDet;
                 },
                 set: function (v) {
-                    this.$root.ntrFilter.needDet = v;
+                    this.$parent.ntrFilter.needDet = v;
                 }
             },
             shifrDet: {
                 get: function () {
-                    return this.$root.ntrFilter.shifrDet;
+                    return this.$parent.ntrFilter.shifrDet;
                 },
                 set: function (v) {
-                    this.$root.ntrFilter.shifrDet = v;
+                    this.$parent.ntrFilter.shifrDet = v;
                 }
             },
             isFilter:function() {
@@ -357,22 +408,35 @@
             }
         },
         mounted:function() {
-                 if (!this.initialized) {
-                     this.initialized=true;
-                     console.log('filter initializatiod');
+                  var l=$(".filterclass").length;
+                  var ll=$("#cbNeedYear").length;
+                  var n=this.filterformid;
+                  var lll=$("#"+n).length;
+                  var namecbneedyear  = this.cbneedyearid;
+                  var namecbneednpr   = this.cbneednprid;
+                  var namecbneedpredp = this.cbneedpredpid;
+                  var namecbneeddet   = this.cbneeddetid;
+                 console.log('mounted: l='+l+" ll="+ll+" n="+n+" lll="+lll);
+                 if (!this.$parent.ntrFilterInitialized) {
+                     this.$parent.ntrFilterInitialized=true;
+//                     console.log('filter initialization');
                     this.setAuthorsDD();
                     this.setDetDropDown();
 
-                    $('#cbNeedYear')
+//                    $('#cbNeedYear')
+                    $('#'+namecbneedyear)
                        .checkbox()
                     ;
-                    $('#cbNeedNPR')
+//                    $('#cbNeedNPR')
+                    $('#'+namecbneednpr)
                        .checkbox()
                     ;
-                    $('#cbNeedPredp')
+//                    $('#cbNeedPredp')
+                    $('#'+namecbneedpredp)
                        .checkbox()
                     ;
-                    $('#cbNeedDet')
+//                    $('#cbNeedDet')
+                    $('#'+namecbneeddet)
                        .checkbox()
                     ;
             }

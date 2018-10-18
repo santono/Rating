@@ -17,6 +17,7 @@ public class NtrRecFromJSONDTO {
     private int shifrPre;
     private int idRinc;
     private String hrefRinc;
+    private int yPubl;
 
 
     public int getId() {
@@ -121,5 +122,13 @@ public class NtrRecFromJSONDTO {
 
     public void setHrefRinc(String hrefRinc) {
         this.hrefRinc = hrefRinc;
+    }
+
+    public int getyPubl() {
+        return yPubl;
+    }
+
+    public void setyPubl(int yPubl) {
+        this.yPubl = yPubl;
     }
 }

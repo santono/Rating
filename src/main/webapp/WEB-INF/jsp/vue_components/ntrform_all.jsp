@@ -1,8 +1,4 @@
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-<%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <%@ page contentType="text/html;charset=UTF-8" pageEncoding="UTF-8" language="java" %>
-<%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <template id="template-ntr-form">
     <div class="ui first coupled modal" v-show="show" id="modalntr">
         <i class="close icon"></i>
@@ -29,30 +25,41 @@
 			             <label>Название</label>
                          <p v-if="approvedrec">{{editingrec.name}}</p>
                          <div class="ui container" v-else>
-                         <div class="ui search" >
-                              <input class="prompt" type="text" v-model="editingrec.name" placeholder="Название работы"  maxlength="256" v-on:change="validatentrname">
-                              <div class="results"></div>
-                         </div>
+                              <div class="ui search" >
+                                   <input class="prompt" type="text" v-model="editingrec.name" placeholder="Название работы"  maxlength="256" v-on:change="validatentrname">
+                                   <div class="results"></div>
+                              </div>
                          </div>
 <%--
                          <input v-else v-model="editingrec.name" type="text"  placeholder="Название работы"  maxlength="256" v-on:change="validatentrname"/>
---%>                     </div>
+--%>                 </div>
                     <div class="required field">
                         <label>Издательство</label>
                         <p v-if="approvedrec">{{editingrec.parametry}}</p>
                         <input v-else v-model="editingrec.parametry" type="text"  placeholder="Название издательства"  maxlength="256"/>
                     </div>
-                    <div class="required field">
-                        <label>Дата публикации</label>
-                        <p v-if="approvedrec">{{editingrec.datepubl}}</p>
-                        <vue-datepicker-local v-else v-model="editingrec.datepubl" clearable format="YYYY-MM"></vue-datepicker-local>
+                    <div class="inline fields">
+                        <div class="required field">
+                            <label>Дата публикации</label>
+                            <p v-if="approvedrec">{{datePublString}}</p>
+                            <vue-datepicker-local v-else v-model="editingrec.datepubl" clearable format="YYYY-MM"></vue-datepicker-local>
+                        </div>
+                        <div class="required field">
+                            <label>Учетный год</label>
+                            <p v-if="approvedrec">{{editingrec.yPubl}}</p>
+                            <input type="number" v-else v-model="editingrec.yPubl" max="2018" min="1960" placeholder="Учетный год"/>
+                        </div>
                     </div>
-                    <div>
-                        <label>Код РИНЦ</label>
-                        <input v-model="editingrec.idRinc" type="text"  placeholder="Код РИНЦ"  maxlength="10"/>
-                        <label>Ссылка на страницу eLIBRARY</label>
-                        <input v-model="editingrec.hrefRinc" type="text"  placeholder="Ссылка на страницу eLIBRARY"  maxlength="128"/>
-                        <a v-if="correctRINCHREF" v-bind:href="''+editingrec.hrefRinc+''" target="_blank">Просмотр</a>
+                    <div class="inline fields">
+                        <div class="field">
+                            <label>Код РИНЦ</label>
+                            <input v-model="editingrec.idRinc" type="text"  placeholder="Код РИНЦ"  maxlength="10"/>
+                        </div>
+                        <div class="field">
+                            <label>Ссылка на страницу eLIBRARY</label>
+                            <input v-model="editingrec.hrefRinc" type="text"  placeholder="Ссылка на страницу eLIBRARY"  maxlength="128"/>
+                            <a v-if="correctRINCHREF" v-bind:href="''+editingrec.hrefRinc+''" target="_blank">Просмотр</a>
+                        </div>
                     </div>
 
                 </div>
@@ -71,27 +78,27 @@
                 <div class="ui bottom attached tab segment" data-tab="third">
 <%--                    <div style="display:flex;">         --%>
                     <div>
-                    <label>Характеристики работы</label>
-                    <div>
-                        <div v-if="!approvedrec" class="ui multiple selection dropdown" id="ddp">
+                         <label>Характеристики работы</label>
+                         <div>
+                             <div v-if="!approvedrec" class="ui multiple selection dropdown" id="ddp">
                             <!-- This will receive comma separated value like OH,TX,WY !-->
-                            <input name="states" type="hidden" >
-                            <i class="dropdown icon"></i>
-                            <div class="default text">Характеристики работы</div>
-                            <div class="menu">
-                                <div class="item" v-for="pokaz in pokazlist" v-bind:data-value="pokaz.id">{{pokaz.shortname}}</div>
+                                 <input name="states" type="hidden" >
+                                  <i class="dropdown icon"></i>
+                                 <div class="default text">Характеристики работы</div>
+                                 <div class="menu">
+                                     <div class="item" v-for="pokaz in pokazlist" v-bind:data-value="pokaz.id">{{pokaz.shortname}}</div>
+                                 </div>
                             </div>
-                        </div>
-                        <div v-else>
-                            <ul>
-                                <li v-for="p in ntrpokazlist">{{_.find(pokazlist,['id',p]).shortname}}</li>
-                            </ul>
-                        </div>
+                            <div v-else>
+                               <ul>
+                                   <li v-for="p in ntrpokazlist">{{_.find(pokazlist,['id',p]).shortname}}</li>
+                               </ul>
+                            </div>
 
 <%--                        
                         <p>{{editingrec.pokaz}}</p>
 --%>
-                    </div>
+                         </div>
                     </div>    
                     <%--<div class="ui divider" ></div> --%>
 <%--
@@ -116,44 +123,44 @@
                     </div>
 --%>
                     <div> <%-- second container for flex --%>
-                    <div class="field" v-if="canselectfiles">
-                        <input type="file" id="fileElem" multiple style="display:none" v-on:change.prevent="handleFiles">
-                        <button class="ui icon button" id="fileSelect" v-on:click.prevent="clickAttach">
-                            <i class="attach icon"></i>
-                        </button>
-                    </div>
-                    <div v-if="isprogressloadingfiles">
-                        <div class="ui indicating progress" data-value="1" data-total="200" id="progressupload">
-                            <div class="bar">
-                                <div class="progress"></div>
-                            </div>
-                            <div class="label"></div>
-                        </div>
+                          <div class="field" v-if="canselectfiles">
+                              <input type="file" id="fileElem" multiple style="display:none" v-on:change.prevent="handleFiles">
+                              <button class="ui icon button" id="fileSelect" v-on:click.prevent="clickAttach">
+                                  <i class="attach icon"></i>
+                              </button>
+                          </div>
+                          <div v-if="isprogressloadingfiles">
+                               <div class="ui indicating progress" data-value="1" data-total="200" id="progressupload">
+                                   <div class="bar">
+                                        <div class="progress"></div>
+                                   </div>
+                               <div class="label"></div>
+                          </div>
                     </div>
 
                     <div class="main" v-show="ntrdoclist.length>0" v-cloak>
                         <div class="text container">
-                        <div class="ui middle aligned divided list">
-                            <div class="item" v-for="doc in ntrdoclist" :key="doc.id">
+                            <div class="ui middle aligned divided list">
+                                <div class="item" v-for="doc in ntrdoclist" :key="doc.id">
 <%--
                                 <div class="right floated content">
                                     <div class="mini ui button"  v-on:click="removeDoc(doc)"><i class="remove icon"></i></div>
 --%>
-                                <div class="right floated content" v-if="!approvedrec">
-                                     <a class="ui label" v-on:click.prevent="removeNtrDoc(doc)">
-                                       <i class="remove icon"></i>
-                                     </a>
-                                </div>
-                                <div class="right floated content">
-                                    <a class="ui label" v-on:click="showNtrDoc(doc)">
-                                       <i v-bind:class="classNtrDoc(doc)"></i>
-                                    </a>
-                                </div>
-                                <div class="content">
-                                    {{doc.filename}}
+                                    <div class="right floated content" v-if="!approvedrec">
+                                       <a class="ui label" v-on:click.prevent="removeNtrDoc(doc)">
+                                         <i class="remove icon"></i>
+                                       </a>
+                                    </div>
+                                    <div class="right floated content">
+                                       <a class="ui label" v-on:click="showNtrDoc(doc)">
+                                          <i v-bind:class="classNtrDoc(doc)"></i>
+                                       </a>
+                                    </div>
+                                    <div class="content">
+                                        {{doc.filename}}
+                                    </div>
                                 </div>
                             </div>
-                        </div>
                         </div>
 <%--
                         <div class="ui label">Документы</div>
@@ -242,6 +249,7 @@
 
                    action          : 0         ,
                    datePubl        : new Date() ,
+                   datePublString  : ''        ,
                    range           : [new Date(),new Date()],
                    emptyTime       : '',
                    emptyRange      : [],
@@ -825,25 +833,14 @@
                     });
             },
             savePokazListForRec:function() {
-//                console.log('inside savePokazListForRec');
-<%--
-                <c:url value="/util/ntrpokaz/save" var="uri2" />
-                var uri = "${uri2}";
---%>                
                 var uri = this.$root.rootPath
                         + "/util/ntrpokaz/save"; 
                 var pl  = $("#ddp").dropdown("get value");
-//                console.log('pl='+pl);
                 if (!(pl&&pl.length>0)) {
                     pl="";
                 }
-//                console.log('pl second='+pl);
-//                console.log(JSON.stringify(savingRec));
-//                var objRec  = JSON.stringify(savingRec);
                 var vm       = this;
-//                console.log('vt passed id='+this.editingrec.id);
                 var param    = 'id='+this.editingrec.id+'&pokaz='+pl;
-//                console.log('before axios param='+param);
                 axios.post(uri, param,
                         {})
                         .then(function(response){
@@ -1163,6 +1160,8 @@
                                         var s=vm.editingrec.datepubl;
                                         var dt=new Date(s);
                                         vm.editingrec.datepubl=new Date(s);
+//                                        vm.datePublString=date.getMonth(vm.editingrec.datepubl)+'-'+date.getFullYear(vm.editingrec.datepubl);
+                                        vm.datePublString=vm.editingrec.datepubl.toLocaleDateString("ru-RU",{month: 'long', year: 'numeric' });
                                     }
                                 } else {
                                     vm.editingrec.datepubl=null;
@@ -1223,6 +1222,10 @@
                 this.ntrdoclist             = [];
                 this.ntrdoclisthaschanged   = false;
                 this.ntrNameValidated       = false;
+//                this.datePublString         = date.Month(this.editigrec.datepubl)+'-'+date.getFullYear(this.editigrec.datepubl)
+//                this.datePublString         = date.Month(this.editigrec.datepubl)+'-'+date.getFullYear(this.editigrec.datepubl)
+                this.datePublString         = this.editingrec.datepubl.toLocaleDateString("ru-RU",{month: 'long', year: 'numeric' });
+
             },
             classNtrDoc: function (d) {
                 if (!d.filename) {

@@ -11,6 +11,7 @@
             <div id="containerstu" style="min-width: 310px; height: 600px; margin: 0 auto"></div>
        </div>
         <filterform ref="filter"
+                    propid="2"
                     v-on:eresetfilter = "reSetFilter"
                     v-on:esetfilter   = "setFilter"
 
@@ -31,7 +32,21 @@
                 namepre       :    "",
                 isLoading     : false,
                 fioNprFilter  : '',
-                nameDetFilter : ''
+                nameDetFilter : '',
+                ntrFilter:{
+                    needYear   : false     ,
+                    yearFr     : 1970      ,
+                    yearTo     : 2018      ,
+                    needNPR    : false     ,
+                    shifrNpr   : 0         ,
+                    needPredp  : false     ,
+                    shifrPredp : 0         ,
+                    namePredp  : ''        ,
+                    needDet    : false     ,
+                    shifrDet   : 0
+                },
+                ntrFilterInitialized:false
+
             };
 
         },
@@ -41,82 +56,82 @@
         computed: {
             yearFr:{
                 get: function () {
-                    return this.$root.ntrFilter.yearFr;
+                    return this.ntrFilter.yearFr;
                 },
                 set: function (v) {
-                    this.$root.ntrFilter.yearFr = v;
+                    this.ntrFilter.yearFr = v;
                 }
             },
             yearTo:{
                 get: function () {
-                    return this.$root.ntrFilter.yearTo;
+                    return this.ntrFilter.yearTo;
                 },
                 set: function (v) {
-                    this.$root.ntrFilter.yearTo = v;
+                    this.ntrFilter.yearTo = v;
                 }
             },
             needYear:{
                 get: function () {
-                    return this.$root.ntrFilter.needYear;
+                    return this.ntrFilter.needYear;
                 },
                 set: function (v) {
-                    this.$root.ntrFilter.needYear = v;
+                    this.ntrFilter.needYear = v;
                 }
             },
             shifrNpr:{
                 get: function () {
-                    return this.$root.ntrFilter.shifrNpr;
+                    return this.ntrFilter.shifrNpr;
                 },
                 set: function (v) {
-                    this.$root.ntrFilter.shifrNpr = v;
+                    this.ntrFilter.shifrNpr = v;
                 }
             },
             needNPR:{
                 get: function () {
-                    return this.$root.ntrFilter.needNPR;
+                    return this.ntrFilter.needNPR;
                 },
                 set: function (v) {
-                    this.$root.ntrFilter.needNPR = v;
+                    this.ntrFilter.needNPR = v;
                 }
             },
             shifrPredp:{
                 get: function () {
-                    return this.$root.ntrFilter.shifrPredp;
+                    return this.ntrFilter.shifrPredp;
                 },
                 set: function (v) {
-                    this.$root.ntrFilter.shifrPredp = v;
+                    this.ntrFilter.shifrPredp = v;
                 }
             },
             needPredp:{
                 get: function () {
-                    return this.$root.ntrFilter.needPredp;
+                    return this.ntrFilter.needPredp;
                 },
                 set: function (v) {
-                    this.$root.ntrFilter.needPredp = v;
+                    this.ntrFilter.needPredp = v;
                 }
             },
             namePodr:{
                 get: function () {
-                    return this.$root.ntrFilter.namePredp;
+                    return this.ntrFilter.namePredp;
                 },
                 set: function (v) {
-                    this.$root.ntrFilter.namePredp = v;
+                    this.ntrFilter.namePredp = v;
                 }
             },
             needDet: {
                 get: function () {
-                    return this.$root.ntrFilter.needDet;
+                    return this.ntrFilter.needDet;
                 },
                 set: function (v) {
-                    this.$root.ntrFilter.needDet = v;
+                    this.ntrFilter.needDet = v;
                 }
             },
             shifrDet: {
                 get: function () {
-                    return this.$root.ntrFilter.shifrDet;
+                    return this.ntrFilter.shifrDet;
                 },
                 set: function (v) {
-                    this.$root.ntrFilter.shifrDet = v;
+                    this.ntrFilter.shifrDet = v;
                 }
             },
             isFilter:function() {

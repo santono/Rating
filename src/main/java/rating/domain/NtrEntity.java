@@ -2,7 +2,6 @@ package rating.domain;
 
 
 import java.io.Serializable;
-import java.sql.Date;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
@@ -23,6 +22,7 @@ public class NtrEntity  implements Serializable {
     private String parametry;
     private int idRinc;
     private String hrefRinc;
+    private int yPubl;
 
     public int getId() {
         return id;
@@ -152,6 +152,8 @@ public class NtrEntity  implements Serializable {
         this.hrefRinc = hrefRinc;
     }
 
+
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -166,6 +168,14 @@ public class NtrEntity  implements Serializable {
         if (parametry != null ? !parametry.equals(that.parametry) : that.parametry != null) return false;
 
         return true;
+    }
+
+    public int getyPubl() {
+        return yPubl;
+    }
+
+    public void setyPubl(int yPubl) {
+        this.yPubl = yPubl;
     }
 
     @Override
